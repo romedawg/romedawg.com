@@ -1,0 +1,57 @@
+<html layout:decorator="index">
+	<div layout:fragment="content">
+	
+		<h2>Enter a User</h2>
+		
+		<form method="post" name="user_form" id="user_form" th:action="@{'/user/add'}" th:object="${User}" role="form">
+		
+			<table>				
+				<tr>
+				<td>username</td>
+				<td><input type="text"  th:field="*{username}" /></td>
+				<td th:if="${#fields.hasErrors('username')}" th:errors="*{username}"> Error</td>
+				</tr>
+				
+				<tr>
+				<td>Email</td>
+				<td><input type="text"  th:field="*{email}" /></td>
+				<td th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</td>
+				</tr>
+				
+				<tr>
+				<td>Phone</td>
+				<td><input type="text"  th:field="*{phone}" /></td>
+				<td th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">Phone Error</td>
+				</tr>
+				
+				<tr>
+				<td>Address</td>
+				<td><input type="text"  th:field="*{address}" /></td>
+				<td th:if="${#fields.hasErrors('address')}" th:errors="*{address}">Address Error</td>
+				</tr>
+				
+				<tr>
+				<td>Cty</td>
+				<td><input type="text"  th:field="*{city}" /></td>
+				<td th:if="${#fields.hasErrors('city')}" th:errors="*{city}">City Error</td>
+				</tr>
+				<tr>
+				<td>State</td>
+				<td><input type="text"  th:field="*{state}" /></td>
+				<td th:if="${#fields.hasErrors('state')}" th:errors="*{state}">State Error</td>
+				</tr>
+				
+				<tr>
+				<td>State</td>
+				<td><input type="text"  th:field="*{state}" /></td>
+				<td th:if="${#fields.hasErrors('state')}" th:errors="*{state}">State Error</td>
+				</tr>
+				
+				<tr><td><button type="submit" value="Add" class="btn btn-primary">Add</button></td></tr>
+			
+			</table>
+			
+		</form>
+	</div>
+
+</html>

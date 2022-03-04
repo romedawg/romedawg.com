@@ -1,0 +1,30 @@
+databaseChangeLog:
+- changeSet:
+    id: 1
+    author: rome
+    changes:
+      - createTable:
+          tableName: todo
+          columns:
+            - column:
+                name: id
+                type: int
+                autoIncrement: true
+                constraints:
+                  primaryKey: true
+                  nullable: false
+            - column:
+                name: task_name
+                type: varchar(255)
+            - column:
+                name: task_description
+                type: text
+            - column:
+                name: date
+                type: date
+            - column:
+                name: active
+                type: boolean
+
+
+

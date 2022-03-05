@@ -25,6 +25,10 @@ databaseChangeLog:
             - column:
                 name: active
                 type: boolean
+            - column:
+                name: category
+                type: varchar(25)
+
 
 
 

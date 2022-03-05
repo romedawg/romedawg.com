@@ -1,7 +1,7 @@
 package com.romedawg.domain.todo;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.sql.Date;
 
 @Entity
 @Table(name="todo")
@@ -24,7 +24,10 @@ public class Todo {
     @Column(name = "active")
     private Boolean Active ;
 
-    public Todo(Integer id, String taskName, java.util.Date date, Boolean active) {
+    @Column(name = "category")
+    private String Category;
+
+    public Todo(Integer id, String taskName, java.sql.Date date, Boolean active) {
         Id = id;
         TaskName = taskName;
         Date = date;
@@ -43,6 +46,7 @@ public class Todo {
                 ", TaskDescription='" + TaskDescription + '\'' +
                 ", Date=" + Date +
                 ", Active=" + Active +
+                ", Category='" + Category + '\'' +
                 '}';
     }
 
@@ -70,11 +74,11 @@ public class Todo {
         TaskDescription = taskDescription;
     }
 
-    public java.util.Date getDate() {
+    public java.sql.Date getDate() {
         return Date;
     }
 
-    public void setDate(java.util.Date date) {
+    public void setDate(java.sql.Date date) {
         Date = date;
     }
 
@@ -84,5 +88,13 @@ public class Todo {
 
     public void setActive(Boolean active) {
         Active = active;
+    }
+
+    public String getCategory() {
+        return Category;
+    }
+
+    public void setCategory(String category) {
+        Category = category;
     }
 }

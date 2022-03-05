@@ -26,7 +26,12 @@ public class todoController {
     public String todoPost(@ModelAttribute Todo todo){
         long currentTime = System.currentTimeMillis();
         Date date = new Date(currentTime);
+        String taskDescription = todo.getTaskDescription();
+
         todo.setDate(date);
+        todo.setTaskDescription(taskDescription.strip());
+        todo.setActive(Boolean.TRUE);
+
         todoRepository.save(todo);
         return "pages/todo";
     }

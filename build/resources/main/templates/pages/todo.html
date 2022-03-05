@@ -10,6 +10,14 @@
                 <input type="text" class="form-control" id="taskName" th:field="*{taskName}">
             </div>
             <div class="form-group">
+                <label for="Category">Category</label>
+<!--                todo figure out how to persist category -->
+                <select name="color" class="form-control" id="Category" th:field="*{Category}">
+                    <option th:each="Category : ${T(com.romedawg.domain.todo.Category).values()}"
+                            th:value="${Category}" th:text="${Category.getDisplayValue}"></option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="taskDescription">Description</label>
                 <textarea class="form-control" id="taskDescription" th:field="*{taskDescription}" rows="3"></textarea>
             </div>

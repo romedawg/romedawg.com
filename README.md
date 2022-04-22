@@ -24,15 +24,14 @@ docker run -e POSTGRES_HOST="172.17.0.1" -e POSTGRES_DATABASE="romedawg" -e POST
 ```
 
 # what components are needed?
- - postgres(See below how to setup locally)
+postgres(See below how to setup locally)
 
-export POSTGRES_HOST=[localhost|ipaddr]
-export POSTGRES_DATABASE=romedawg
-export POSTGRES_USERNAME=roman
-export POSTGRES_PASSWORD=password
-
-export METRA_API_USERNAME=key
-export METRA_API_PASSWORD=password
+ - export POSTGRES_HOST=[localhost|ipaddr]
+ - export POSTGRES_DATABASE=romedawg 
+ - export POSTGRES_USERNAME=roman 
+ - export POSTGRES_PASSWORD=password 
+ - export METRA_API_USERNAME=key 
+ - export METRA_API_PASSWORD=password
 
 
 ## Setting up postgres
@@ -40,6 +39,5 @@ https://hub.docker.com/repository/docker/romedawg/postgres-14
 
 pull down a postgres image and run it locall
  - docker pull romedawg/postgres-14
-
  - docker run -e ADMIN_USER=roman -e ADMIN_PASSWORD=password -e POSTGRES_DATABASE=romedawg -p 5432:5432 --name postgres romedawg/postgres-14
 

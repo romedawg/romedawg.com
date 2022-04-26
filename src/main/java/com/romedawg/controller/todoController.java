@@ -2,22 +2,27 @@ package com.romedawg.controller;
 
 import com.romedawg.domain.todo.Todo;
 import com.romedawg.repository.TodoRepository;
+import com.romedawg.schedules.AlertingSchedule;
+import com.slack.api.methods.SlackApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.util.Collections;
 
 @Controller
 public class todoController {
 
+    private AlertingSchedule alertingSchedule;
+
     @Autowired
     private TodoRepository todoRepository;
 
     @GetMapping("/todo")
-    public String todo(Model model){
+    public String todo(Model model)  {
         model.addAttribute("todo", new Todo() );
         return "pages/todo";
     }

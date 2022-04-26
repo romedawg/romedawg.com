@@ -28,8 +28,18 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+    // Need this for http requests
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+
+    // Used for databind/objectmapping
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2.2'
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
+    // TESTING SDKs
+    implementation group: 'com.slack.api', name: 'slack-api-client', version: '1.21.2'
+
 }
 
 tasks.named("test") {

@@ -66,6 +66,7 @@ public class AlertingSchedule {
 //            if (routeRepository.findRouteID(newroute.build().getRouteId()) == ""){
 //                System.out.println(String.format("%s does not exist, adding it.", newroute.build().getRouteId()));
 //            }
+            routeRepository.save(newroute.build());
         }
         System.out.println("metra routes done loading");
 

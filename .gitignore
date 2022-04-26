@@ -1,3 +1,5 @@
 .idea
 .gradle
 !gradle/wrapper/gradle-wrapper.jar
+mycredentials.txt
+build/libs/romedawg.jar

@@ -9,7 +9,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RouteRepository extends JpaRepository<Route, Long> {
 
-//    @Query("SELECT route_id from Route WHERE route_id = (:route_id)")
-//    String findRouteID(@Param("route_id") String route_id);
+    @Query("SELECT r.routeId from Route r WHERE r.routeId = (:route_id)")
+    Boolean existsRouteByRouteID(@Param("route_id") String route_id);
+
+    @Query("SELECT r.routeId from Route r WHERE r.routeId = (:route_id)")
+    String getRouteID(@Param("route_id") String route_id);
 
 }

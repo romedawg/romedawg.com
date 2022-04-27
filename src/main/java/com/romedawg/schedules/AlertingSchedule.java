@@ -27,6 +27,8 @@ import java.util.List;
 @Component
 public class AlertingSchedule {
 
+    private final static Integer twentyFourHoursMS = 86400000;
+
     @Value("${METRA_API_USERNAME}")
     private String metraUrlUsername;
     @Value("${METRA_API_PASSWORD}")
@@ -42,7 +44,7 @@ public class AlertingSchedule {
         this.routeRepository = routeRepository;
     }
 
-    @Scheduled(fixedRate = 2000)
+    @Scheduled(fixedRate = twentyFourHoursMS)
     void UpdateRoutes() throws JsonProcessingException {
 
         System.out.println("test");
@@ -58,15 +60,17 @@ public class AlertingSchedule {
 
 
 //        System.out.println("loading metra routes");
-//        List<Route> existingRoutes = routeRepository.findAll();
+        List<Route> existingRoutes = routeRepository.findAll();
 
         System.out.println("Iterate over the routes");
         for (Route.Builder newroute:newRoutes){
             System.out.println(String.format("new url request, route id: %s", newroute.build().getRouteId()));
-//            if (routeRepository.findRouteID(newroute.build().getRouteId()) == ""){
-//                System.out.println(String.format("%s does not exist, adding it.", newroute.build().getRouteId()));
-//            }
-            routeRepository.save(newroute.build());
+            if (routeRepository.getRouteID(newroute.build().getRouteId()) != null){
+                System.out.println(String.format("%s does not exist, adding it.", newroute.build().getRouteId()));
+            }else {
+                routeRepository.save(newroute.build());
+            }
+            System.out.println("check if route exists" + routeRepository.getRouteID(newroute.build().getRouteId()));
         }
         System.out.println("metra routes done loading");
 

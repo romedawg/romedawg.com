@@ -45,3 +45,9 @@ pull down a postgres image and run it locally
  - docker pull romedawg/postgres-14
  - docker run -e ADMIN_USER=roman -e ADMIN_PASSWORD=password -e POSTGRES_DATABASE=romedawg -p 5432:5432 --name postgres romedawg/postgres-14
 
+
+#### TODO
+ - Alerts(if data refreshes fail)
+   - If a train emergency/delay occurs
+ - Data inputs for Alerts, Stops, etc..
+   - Clean up Route repository

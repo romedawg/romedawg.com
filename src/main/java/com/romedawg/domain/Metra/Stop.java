@@ -43,6 +43,76 @@ public class Stop {
     }
 
 
+    private Stop(Builder builder){
+        this.stopId = builder.stopId;
+        this.stopName = builder.stopName;
+        this.stopDesc = builder.stopDesc;
+        this.stopLat = builder.stopLat;
+        this.stopLon = builder.stopLon;
+        this.zoneId = builder.zoneId;
+        this.stopUrl = builder.stopUrl;
+        this.wheelchairBoarding = builder.wheelchairBoarding;
+    }
+
+    /***
+     * Builder class.
+     */
+   public static final class Builder {
+       private String stopId;
+       private String stopName;
+       private String stopDesc;
+       private Long stopLat;
+       private Long stopLon;
+       private String zoneId;
+       private String stopUrl;
+       private Integer wheelchairBoarding;
+
+       public Builder setStopId(String stopId) {
+           this.stopId = stopId;
+           return this;
+       }
+
+       public Builder setStopName(String stopName) {
+           this.stopName = stopName;
+           return this;
+       }
+
+       public Builder setStopDesc(String stopDesc) {
+           this.stopDesc = stopDesc;
+           return this;
+       }
+
+       public Builder setStopLat(Long stopLat) {
+           this.stopLat = stopLat;
+           return this;
+       }
+
+       public Builder setStopLon(Long stopLon) {
+           this.stopLon = stopLon;
+           return this;
+       }
+
+       public Builder setZoneId(String zoneId) {
+           this.zoneId = zoneId;
+           return this;
+       }
+
+       public Builder setStopUrl(String stopUrl) {
+           this.stopUrl = stopUrl;
+           return this;
+       }
+
+       public Builder setWheelchairBoarding(Integer wheelchairBoarding) {
+           this.wheelchairBoarding = wheelchairBoarding;
+           return this;
+       }
+
+        public Stop build(){
+            return new Stop(this);
+        }
+   }
+
+
 
     @Override
     public String toString() {
@@ -71,64 +141,72 @@ public class Stop {
         return stopId;
     }
 
-    public void setStopId(String stopId) {
+    public Stop setStopId(String stopId) {
         this.stopId = stopId;
+        return this;
     }
 
     public String getStopName() {
         return stopName;
     }
 
-    public void setStopName(String stopName) {
+    public Stop setStopName(String stopName) {
         this.stopName = stopName;
+        return this;
     }
 
     public String getStopDesc() {
         return stopDesc;
     }
 
-    public void setStopDesc(String stopDesc) {
+    public Stop setStopDesc(String stopDesc) {
         this.stopDesc = stopDesc;
+        return this;
     }
 
     public Long getStopLat() {
         return stopLat;
     }
 
-    public void setStopLat(Long stopLat) {
+    public Stop setStopLat(Long stopLat) {
         this.stopLat = stopLat;
+        return this;
     }
 
     public Long getStopLon() {
         return stopLon;
     }
 
-    public void setStopLon(Long stopLon) {
+    public Stop setStopLon(Long stopLon) {
         this.stopLon = stopLon;
+        return this;
     }
 
     public String getZoneId() {
         return zoneId;
     }
 
-    public void setZoneId(String zoneId) {
+    public Stop setZoneId(String zoneId) {
         this.zoneId = zoneId;
+        return this;
     }
 
     public String getStopUrl() {
         return stopUrl;
     }
 
-    public void setStopUrl(String stopUrl) {
+    public Stop setStopUrl(String stopUrl) {
         this.stopUrl = stopUrl;
+        return this;
     }
 
     public Integer getWheelchairBoarding() {
         return wheelchairBoarding;
     }
 
-    public void setWheelchairBoarding(Integer wheelchairBoarding) {
+    public Stop setWheelchairBoarding(Integer wheelchairBoarding) {
         this.wheelchairBoarding = wheelchairBoarding;
+        return this;
     }
 }
 

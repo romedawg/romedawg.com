@@ -92,6 +92,8 @@ databaseChangeLog:
             - column:
                 name: trip_id
                 type: varchar(20)
+                constraints:
+                  unique: true
             - column:
                 name: trip_headsign
                 type: varchar(100)

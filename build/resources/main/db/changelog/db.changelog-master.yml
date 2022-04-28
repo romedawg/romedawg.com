@@ -109,7 +109,50 @@ databaseChangeLog:
     author: rome
     changes:
       - createTable:
-          tableName: stop_times
+          tableName: stop
+          columns:
+            - column:
+                name: id
+                type: int
+                autoIncrement: true
+                constraints:
+                  primaryKey: true
+            - column:
+                name: stop_id
+                type: varchar(25)
+                constraints:
+                  nullable: false
+                  unique: true
+            - column:
+                name: arrival_time
+                type: varchar(25)
+            - column:
+                name: stop_name
+                type: varchar(25)
+            - column:
+                name: stop_desc
+                type: varchar(10)
+            - column:
+                name: stop_lat
+                type: int
+            - column:
+                name: stop_long
+                type: int
+            - column:
+                name: zone_id
+                type: varchar(20)
+            - column:
+                name: stop_url
+                type: varchar(255)
+            - column:
+                name: wheelchair_boarding
+                type: int
+- changeSet:
+    id: 5
+    author: rome
+    changes:
+      - createTable:
+          tableName: stop_time
           columns:
             - column:
                 name: id
@@ -122,13 +165,17 @@ databaseChangeLog:
                 type: varchar(50)
             - column:
                 name: arrival_time
-                type: varchar(15)
+                type: varchar(25)
             - column:
                 name: departure_time
-                type: varchar(15)
+                type: varchar(25)
             - column:
                 name: stop_id
-                type: varchar(10)
+                type: varchar(25)
+                constraints:
+                  nullable: false
+                  foreignKeyName: stop_id
+                  references: stop(stop_id)
             - column:
                 name: stop_sequence
                 type: int
@@ -151,46 +198,6 @@ databaseChangeLog:
                 name: notice
                 type: int
 - changeSet:
-    id: 5
-    author: rome
-    changes:
-      - createTable:
-          tableName: stops
-          columns:
-            - column:
-                name: id
-                type: int
-                autoIncrement: true
-                constraints:
-                  primaryKey: true
-            - column:
-                name: stop_id
-                type: varchar(50)
-            - column:
-                name: arrival_time
-                type: varchar(15)
-            - column:
-                name: stop_name
-                type: varchar(15)
-            - column:
-                name: stop_desc
-                type: varchar(10)
-            - column:
-                name: stop_lat
-                type: int
-            - column:
-                name: stop_long
-                type: int
-            - column:
-                name: zone_id
-                type: varchar(20)
-            - column:
-                name: stop_url
-                type: varchar(255)
-            - column:
-                name: wheelchair_boarding
-                type: int
-- changeSet:
     id: 6
     author: rome
     changes:
@@ -208,10 +215,10 @@ databaseChangeLog:
                 type: varchar(50)
             - column:
                 name: arrival_time
-                type: varchar(15)
+                type: varchar(25)
             - column:
                 name: stop_name
-                type: varchar(15)
+                type: varchar(25)
             - column:
                 name: stop_desc
                 type: varchar(10)

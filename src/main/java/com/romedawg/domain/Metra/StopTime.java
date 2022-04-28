@@ -14,24 +14,34 @@ public class StopTime {
 
     @Column(name = "trip_id")
     private String tripId;
+
     @Column(name="arrival_time")
     private String arrivalTime;
+
     @Column(name="departure_time")
     private String departureTime;
+
     @Column(name="stop_id")
     private String stopId;
+
     @Column(name="stop_sequence")
     private Integer stopSequence;
+
     @Column(name="pickup_type")
     private Integer pickupType;
+
     @Column(name="drop_off_type")
     private Integer dropOffType;
+
     @Column(name="center_boarding")
     private Integer centerBoarding;
+
     @Column(name="south_boarding")
     private Integer southBoarding;
+
     @Column(name="bikes_allowed")
     private Integer bikesAllowed;
+
     @Column(name="notice")
     private Integer notice;
 
@@ -133,7 +143,7 @@ public class StopTime {
 
     @Override
     public String toString() {
-        return "Stop{" +
+        return "StopTime{" +
                 "tripId='" + tripId + '\'' +
                 ", arrivalTime='" + arrivalTime + '\'' +
                 ", departureTime='" + departureTime + '\'' +
@@ -251,6 +261,7 @@ public class StopTime {
 
 
 /***
+ * https://gtfsapi.metrarail.com/gtfs/schedule/stop_times
  {"trip_id":"BNSF_BN1264_V1_C",
  "arrival_time":"11:47:00",
  "departure_time":"11:47:00",
@@ -263,3 +274,5 @@ public class StopTime {
  "bikes_allowed":1,
  "notice":0}]
  ***/
+
+//{"trip_id":"BNSF_BN1200_V4_A","arrival_time":"04:00:01","departure_time":"04:00:01","stop_id":"AURORA","stop_sequence":1,"pickup_type":0,"drop_off_type":0,"center_boarding":0,"south_boarding":0,"bikes_allowed":1,"notice":0}

@@ -10,18 +10,25 @@ public class Trip {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private Long id;
+
     @Column(name="route_id")
     private String routeId;
+
     @Column(name="service_id")
     private String serviceId;
-    @Column(name="trip_id")
+
+    @Column(name="trip_id", unique = true)
     private String tripId;
+
     @Column(name="trip_headsign")
     private String tripHeadsign;
+
     @Column(name="block_id")
     private String blockId;
+
     @Column(name="shape_id")
     private String shapeId;
+
     @Column(name="direction_id")
     private Integer directionId;
 
@@ -172,7 +179,8 @@ public class Trip {
 }
 
 
-//{"route_id":"BNSF",
+//https://gtfsapi.metrarail.com/gtfs/schedule/trips
+// {"route_id":"BNSF",
 //        "service_id":"A1",
 //        "trip_id":"BNSF_BN1200_V1_A",
 //        "trip_headsign":"Chicago Union Station",

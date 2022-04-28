@@ -12,7 +12,7 @@ public class Stop {
     private Long id;
 //    id, stop_id, stop_name, stop_desc, lat, lon, zone_id, stop_url, wheelchair_boarding
 
-    @Column(name = "stop_id")
+    @Column(name = "stop_id", unique = true)
     private String stopId;
 
     @Column(name = "stop_name")
@@ -211,6 +211,7 @@ public class Stop {
 }
 
 /***
+ * https://gtfsapi.metrarail.com/gtfs/schedule/stops
  {"stop_id":"GENEVA",
   "stop_name":"Geneva",
   "stop_desc":"",

@@ -1,4 +1,4 @@
-package com.romedawg.repository;
+package com.romedawg.repository.Metra;
 
 import com.romedawg.domain.Metra.Stop;
 import liquibase.pro.packaged.Q;

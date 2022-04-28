@@ -1,7 +1,7 @@
 package com.romedawg.controller;
 
 import com.romedawg.domain.todo.Todo;
-import com.romedawg.repository.TodoRepository;
+import com.romedawg.repository.Metra.TodoRepository;
 import com.romedawg.schedules.MetraUpdates;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

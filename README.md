@@ -2,6 +2,22 @@
 
 # Java playground for roman
 
+## Problem domain
+Overarching goal is to reduce friction.  I need to check 3 different sites to validate information 
+otherwise I can miss a train, bus, etc..  or a train is delayed, other there's no bike available.
+
+This is also a place to add other items, TBD
+
+Commute
+ - Eliminate Multiple places to look for train/bus times.  Divvy bikes(Are they available at the station i expect)
+ - Train delays.
+   - Alerting if a train is late/time switched
+ - Bike Alert
+   - I'm taking the 5:05 train, there's no bikes available when i need to leave the office, so I need to go to a different location
+ - Is a bus/train late
+   - Add tracker information, helps w/ pickups, etc..
+   
+
 # how to deploy?
 Build the jar file
 ```
@@ -47,7 +63,20 @@ pull down a postgres image and run it locally
 
 
 #### TODO
- - Alerts(if data refreshes fail)
-   - If a train emergency/delay occurs
- - Data inputs for Alerts, Stops, etc..
-   - Clean up Route repository
+- Alerting if updates fail
+  - Sent to Slack channel?
+  - Send a text alert? integrate Twilio
+- Alerts(if data refreshes fail)
+    - If a train emergency/delay occurs
+    - Flatten Alert JSON data(multiple nested objects)
+- Deploy to ECS
+  - Provision AWS infrastructure to support this
+- Cleanup StopTimes(as those can be refreshed)
+- Views
+    - Viewing schedules based on train likes to and from City
+- Stop times
+   - Check if trip_id + arrival_time + departure_time already exist? otherwise skip add.
+- Domain Joins - stoptime - stop, etc..
+  - Custom queries
+- Add Divvy Data
+- Add Pace Bus Data

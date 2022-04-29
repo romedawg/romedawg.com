@@ -1,4 +1,4 @@
-package com.romedawg.repository;
+package com.romedawg.repository.Metra;
 
 import com.romedawg.domain.Metra.Trip;
 import org.springframework.data.jpa.repository.JpaRepository;

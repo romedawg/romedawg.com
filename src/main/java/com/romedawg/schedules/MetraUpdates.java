@@ -7,10 +7,10 @@ import com.romedawg.domain.Metra.Route;
 import com.romedawg.domain.Metra.Stop;
 import com.romedawg.domain.Metra.StopTime;
 import com.romedawg.domain.Metra.Trip;
-import com.romedawg.repository.RouteRepository;
-import com.romedawg.repository.StopRepository;
-import com.romedawg.repository.StopTimeRepository;
-import com.romedawg.repository.TripRepository;
+import com.romedawg.repository.Metra.RouteRepository;
+import com.romedawg.repository.Metra.StopRepository;
+import com.romedawg.repository.Metra.StopTimeRepository;
+import com.romedawg.repository.Metra.TripRepository;
 import com.slack.api.Slack;
 import com.slack.api.methods.MethodsClient;
 import com.slack.api.methods.SlackApiException;
@@ -53,88 +53,88 @@ public class MetraUpdates {
     @Value("${METRA_API_PASSWORD}")
     private String metraUrlPassword;
 
-//    // These are Routes that should rarely change, if ever
-//    @Scheduled(fixedRate = twentyFourHoursMS)
-//    private void updateRoutes() {
-//
-//        log.info("Load Metra Routes every 24 hours");
-//        String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/routes";
-//        StringBuffer sb = makeHttpRequest(URL);
-//
-//        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-//        Stop.Builder[] newStops = new Stop.Builder[0];
-//        Route.Builder[] newRoutes = new Route.Builder[0];
-//        try {
-//            newRoutes = objectMapper.readValue(sb.toString(), Route.Builder[].class);
-//        } catch (JsonProcessingException e) {
-//            log.error("failed to map stopTime data to stopTime data object");
-//            e.printStackTrace();
-//        }
-//
-//        for (Route.Builder newroute : newRoutes) {
-//            if (routeRepository.getRouteID(newroute.build().getRouteId()) != null) {
-//            } else {
-//                log.info(String.format("Route %s does not exist, adding into db", newroute.build().getRouteId()));
-//                routeRepository.save(newroute.build());
-//            }
-//        }
-//        log.info("Metra Route loading completed");
-//    }
-//
-//    // These are stops that should rarely change
-//    @Scheduled(fixedRate = twentyFourHoursMS)
-//    private void updateStops() {
-//
-//        log.info("Load Metra Stops");
-//        String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/stops";
-//        StringBuffer sb = makeHttpRequest(URL);
-//
-//        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-//        Stop.Builder[] newStops = new Stop.Builder[0];
-//        try {
-//            newStops = objectMapper.readValue(sb.toString(), Stop.Builder[].class);
-//        } catch (JsonProcessingException e) {
-//            log.error("failed to map stopTime data to stopTime data object");
-//            e.printStackTrace();
-//        }
-//
-//        for (Stop.Builder newstop : newStops) {
-//            if (stopRepository.findStopByStopId(newstop.build().getStopId()) != null) {
-//                continue;
-//            } else {
-//                log.info(String.format("stop id: %s", newstop.build().getStopId()));
-//                stopRepository.save(newstop.build());
-//            }
-//        }
-//
-//        log.info("Metra Stops loading completed");
-//
-//    }
-//
-//    @Scheduled(fixedRate = fifteenMinutesMS)
-//    private void updateStopTimes() {
-//
-//        log.info("Load Metra Stops Times");
-//        String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/stop_times";
-//        StringBuffer sb = makeHttpRequest(URL);
-//
-//        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-//        StopTime.Builder[] newStopTimes = new StopTime.Builder[0];
-//
-//        try {
-//            newStopTimes = objectMapper.readValue(sb.toString(), StopTime.Builder[].class);
-//        } catch (JsonProcessingException e) {
-//            log.error("failed to map stopTime data to stopTime data object");
-//            e.printStackTrace();
-//        }
-//
-//        for (StopTime.Builder newStopTime : newStopTimes) {
-//            stopTimeRepository.save(newStopTime.build());
-//        }
-//
-//        log.info("Metra Stop Times loading completed");
-//
-//    }
+    // These are Routes that should rarely change, if ever
+    @Scheduled(fixedRate = twentyFourHoursMS)
+    private void updateRoutes() {
+
+        log.info("Load Metra Routes every 24 hours");
+        String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/routes";
+        StringBuffer sb = makeHttpRequest(URL);
+
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+        Stop.Builder[] newStops = new Stop.Builder[0];
+        Route.Builder[] newRoutes = new Route.Builder[0];
+        try {
+            newRoutes = objectMapper.readValue(sb.toString(), Route.Builder[].class);
+        } catch (JsonProcessingException e) {
+            log.error("failed to map stopTime data to stopTime data object");
+            e.printStackTrace();
+        }
+
+        for (Route.Builder newroute : newRoutes) {
+            if (routeRepository.getRouteID(newroute.build().getRouteId()) != null) {
+            } else {
+                log.info(String.format("Route %s does not exist, adding into db", newroute.build().getRouteId()));
+                routeRepository.save(newroute.build());
+            }
+        }
+        log.info("Metra Route loading completed");
+    }
+
+    // These are stops that should rarely change
+    @Scheduled(fixedRate = twentyFourHoursMS)
+    private void updateStops() {
+
+        log.info("Load Metra Stops");
+        String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/stops";
+        StringBuffer sb = makeHttpRequest(URL);
+
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+        Stop.Builder[] newStops = new Stop.Builder[0];
+        try {
+            newStops = objectMapper.readValue(sb.toString(), Stop.Builder[].class);
+        } catch (JsonProcessingException e) {
+            log.error("failed to map stopTime data to stopTime data object");
+            e.printStackTrace();
+        }
+
+        for (Stop.Builder newstop : newStops) {
+            if (stopRepository.findStopByStopId(newstop.build().getStopId()) != null) {
+                continue;
+            } else {
+                log.info(String.format("stop id: %s", newstop.build().getStopId()));
+                stopRepository.save(newstop.build());
+            }
+        }
+
+        log.info("Metra Stops loading completed");
+
+    }
+
+    @Scheduled(fixedRate = fifteenMinutesMS)
+    private void updateStopTimes() {
+
+        log.info("Load Metra Stops Times");
+        String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/stop_times";
+        StringBuffer sb = makeHttpRequest(URL);
+
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+        StopTime.Builder[] newStopTimes = new StopTime.Builder[0];
+
+        try {
+            newStopTimes = objectMapper.readValue(sb.toString(), StopTime.Builder[].class);
+        } catch (JsonProcessingException e) {
+            log.error("failed to map stopTime data to stopTime data object");
+            e.printStackTrace();
+        }
+
+        for (StopTime.Builder newStopTime : newStopTimes) {
+            stopTimeRepository.save(newStopTime.build());
+        }
+
+        log.info("Metra Stop Times loading completed");
+
+    }
 
     @Scheduled(fixedRate = fifteenMinutesMS)
     private void updateTrips(){

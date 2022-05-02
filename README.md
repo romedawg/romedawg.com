@@ -66,10 +66,11 @@ pull down a postgres image and run it locally
 - Alerting if updates fail
   - Sent to Slack channel?
   - Send a text alert? integrate Twilio
-- Alerts(if data refreshes fail)
-    - If a train emergency/delay occurs
+- Alerts
     - Flatten Alert JSON data(multiple nested objects)
-- Deploy to ECS
+    - If a train emergency/delay occurs
+      - Slack alert? text alert?
+- Deploy to ECS using https://github.com/romedawg/aws_infra
   - Provision AWS infrastructure to support this
 - Cleanup StopTimes(as those can be refreshed)
 - Views

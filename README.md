@@ -79,3 +79,5 @@ pull down a postgres image and run it locally
   - Custom queries
 - Add Divvy Data
 - Add Pace Bus Data
+- Display View
+- TESTS!

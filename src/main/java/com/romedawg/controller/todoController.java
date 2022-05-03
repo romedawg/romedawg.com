@@ -16,7 +16,7 @@ import java.util.Collections;
 @Controller
 public class todoController {
 
-    private static final Logger log = LoggerFactory.getLogger(MetraUpdates.class);
+    private static final Logger log = LoggerFactory.getLogger(todoController.class);
 
     private MetraUpdates metraUpdates;
 

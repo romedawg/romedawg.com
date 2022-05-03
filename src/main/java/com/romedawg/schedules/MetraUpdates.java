@@ -66,19 +66,13 @@ public class MetraUpdates {
 
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
         Route.Builder[] newRoutes = new Route.Builder[0];
-        System.out.println(newRoutes);
-        System.out.println(newRoutes.length);
-        if (newRoutes.length !=0) {
-            try {
-                newRoutes = objectMapper.readValue(sb.toString(), Route.Builder[].class);
-            } catch (JsonProcessingException e) {
-                log.error("failed to map stopTime data to stopTime data object");
-                e.printStackTrace();
-            }
-        }else{
-            log.error("No New Routes available, check URL/IP");
-        }
 
+        try {
+            newRoutes = objectMapper.readValue(sb.toString(), Route.Builder[].class);
+        } catch (JsonProcessingException e) {
+            log.error("failed to map stopTime data to stopTime data object");
+            e.printStackTrace();
+        }
 
         for (Route.Builder newroute : newRoutes) {
             if (routeRepository.getRouteID(newroute.build().getRouteId()) != null) {
@@ -137,6 +131,7 @@ public class MetraUpdates {
             e.printStackTrace();
         }
 
+        // TODO Fix - do not add duplicates
         for (StopTime.Builder newStopTime : newStopTimes) {
             stopTimeRepository.save(newStopTime.build());
         }
@@ -166,7 +161,6 @@ public class MetraUpdates {
             if (tripRepository.getTripById(newTrip.build().getTripId()) != null) {
                 continue;
             } else {
-                log.info(String.format("trip: %s", newTrip.build().getTripId()));
                 tripRepository.save(newTrip.build());
             }
         }

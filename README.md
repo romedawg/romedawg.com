@@ -44,14 +44,15 @@ docker run -e POSTGRES_HOST="172.17.0.1" --env-file mycredentials.txt -p 8080:80
 ```
 
 # what components are needed?
-postgres(See below how to setup locally)
 
-POSTGRES_HOST=[localhost|ipaddr]
-POSTGRES_DATABASE=romedawg 
-POSTGRES_USERNAME=roman 
-POSTGRES_PASSWORD=password 
-METRA_API_USERNAME=key 
-METRA_API_PASSWORD=password
+## ENV Variables
+- POSTGRES_HOST=[localhost|ipaddr]
+- POSTGRES_DATABASE=romedawg 
+- POSTGRES_USERNAME=roman 
+- POSTGRES_PASSWORD=password 
+- METRA_API_USERNAME=key 
+- METRA_API_PASSWORD=password
+- SLACK_WEBHOOK=<SLACK_WEBHOOK>
 
 
 ## Setting up postgres
@@ -63,9 +64,6 @@ pull down a postgres image and run it locally
 
 
 #### TODO
-- Alerting if updates fail
-  - Sent to Slack channel?
-  - Send a text alert? integrate Twilio
 - Alerts
     - Flatten Alert JSON data(multiple nested objects)
     - If a train emergency/delay occurs

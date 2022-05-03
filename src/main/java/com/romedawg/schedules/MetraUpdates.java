@@ -1,8 +1,5 @@
 package com.romedawg.schedules;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.romedawg.domain.Metra.Route;
 import com.romedawg.domain.Metra.Stop;
 import com.romedawg.domain.Metra.StopTime;
@@ -11,12 +8,14 @@ import com.romedawg.repository.Metra.RouteRepository;
 import com.romedawg.repository.Metra.StopRepository;
 import com.romedawg.repository.Metra.StopTimeRepository;
 import com.romedawg.repository.Metra.TripRepository;
-import com.slack.api.Slack;
-import com.slack.api.methods.MethodsClient;
-import com.slack.api.methods.SlackApiException;
-import com.slack.api.methods.request.chat.ChatPostMessageRequest;
-import com.slack.api.methods.response.chat.ChatPostMessageResponse;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+
+import com.slack.api.Slack;
+import com.slack.api.webhook.Payload;
+import com.slack.api.webhook.WebhookResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +28,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
+import java.util.Date;
 
 
 @Component
@@ -53,6 +53,9 @@ public class MetraUpdates {
     @Value("${METRA_API_PASSWORD}")
     private String metraUrlPassword;
 
+    @Value("${SLACK_WEBHOOK}")
+    private String webHookUrl;
+
     // These are Routes that should rarely change, if ever
     @Scheduled(fixedRate = twentyFourHoursMS)
     private void updateRoutes() {
@@ -62,14 +65,20 @@ public class MetraUpdates {
         StringBuffer sb = makeHttpRequest(URL);
 
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-        Stop.Builder[] newStops = new Stop.Builder[0];
         Route.Builder[] newRoutes = new Route.Builder[0];
-        try {
-            newRoutes = objectMapper.readValue(sb.toString(), Route.Builder[].class);
-        } catch (JsonProcessingException e) {
-            log.error("failed to map stopTime data to stopTime data object");
-            e.printStackTrace();
+        System.out.println(newRoutes);
+        System.out.println(newRoutes.length);
+        if (newRoutes.length !=0) {
+            try {
+                newRoutes = objectMapper.readValue(sb.toString(), Route.Builder[].class);
+            } catch (JsonProcessingException e) {
+                log.error("failed to map stopTime data to stopTime data object");
+                e.printStackTrace();
+            }
+        }else{
+            log.error("No New Routes available, check URL/IP");
         }
+
 
         for (Route.Builder newroute : newRoutes) {
             if (routeRepository.getRouteID(newroute.build().getRouteId()) != null) {
@@ -175,11 +184,17 @@ public class MetraUpdates {
         byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes());
         String authenticatedValue = "Basic " + new String(encodedAuth);
 
+        // Used for alerting to Slack
+        int httpStatusCode = 0;
+
         try {
             java.net.URL url = new URL(URL);
             HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
             httpConn.setRequestProperty("Authorization", authenticatedValue );
             httpConn.setRequestMethod("GET");
+            httpStatusCode = httpConn.getResponseCode();
+
+            log.debug(String.format("Response code is %s for URL: %s", httpStatusCode, URL));
 
             BufferedReader bufReader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
             String inputLine;
@@ -187,29 +202,30 @@ public class MetraUpdates {
                 buffer.append(inputLine);
             }
         }catch (Exception e){
+            log.error(String.format("Response code is %s for URL: %s", httpStatusCode, URL));
+            SlackAlerts("HTTP REQUEST failed for URL: " + URL + " STATUS CODE: " + httpStatusCode);
             e.printStackTrace();
         }
         return buffer;
     }
 
 
-    // Get this working
-    private void SlackAlerts() throws SlackApiException, IOException {
+    private void SlackAlerts(String slackMessage) {
         Slack slack = Slack.getInstance();
+        log.info(webHookUrl);
 
-        String slackToken = "";
+        Date date = new Date();
 
-        // Initialize an API Methods client with the given token
-        MethodsClient methods = slack.methods(slackToken);
+        Payload payload = Payload.builder().text(date + " - " + slackMessage).build();
 
-        // Build a request object
-        ChatPostMessageRequest request = ChatPostMessageRequest.builder()
-                .channel("#metra-alerts") // Use a channel ID `C1234567` is preferrable
-                .text(":wave: Hi from a bot written in Java!")
-                .build();
+        try {
+            WebhookResponse response = slack.send(webHookUrl, payload);
+            log.info("response from slack: " + response);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
 
-        // Get a response as a Java object
-        ChatPostMessageResponse response = methods.chatPostMessage(request);
+        log.error(slackMessage);
 
     }
 

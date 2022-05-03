@@ -42,6 +42,12 @@ dependencies {
     // TESTING SDKs
     implementation group: 'com.slack.api', name: 'slack-api-client', version: '1.21.2'
 
+    implementation("com.squareup.okhttp3:okhttp") {
+        version {
+            strictly '4.9.0'
+        }
+    }
+
 }
 
 tasks.named("test") {

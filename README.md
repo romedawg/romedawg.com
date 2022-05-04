@@ -5,6 +5,7 @@
 ## Problem domain
 Overarching goal is to reduce friction.  I need to check 3 different sites to validate information 
 otherwise I can miss a train, bus, etc..  or a train is delayed, other there's no bike available.
+I can also take 2 different trains or stopx(depending on when i leave or where I'm going)
 
 This is also a place to add other items, TBD
 

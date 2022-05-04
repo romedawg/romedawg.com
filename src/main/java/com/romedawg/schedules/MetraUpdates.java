@@ -105,38 +105,11 @@ public class MetraUpdates {
             if (stopRepository.findStopByStopId(newstop.build().getStopId()) != null) {
                 continue;
             } else {
-                log.info(String.format("stop id: %s", newstop.build().getStopId()));
                 stopRepository.save(newstop.build());
             }
         }
 
         log.info("Metra Stops loading completed");
-
-    }
-
-    @Scheduled(fixedRate = fifteenMinutesMS)
-    private void updateStopTimes() {
-
-        log.info("Load Metra Stops Times");
-        String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/stop_times";
-        StringBuffer sb = makeHttpRequest(URL);
-
-        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-        StopTime.Builder[] newStopTimes = new StopTime.Builder[0];
-
-        try {
-            newStopTimes = objectMapper.readValue(sb.toString(), StopTime.Builder[].class);
-        } catch (JsonProcessingException e) {
-            log.error("failed to map stopTime data to stopTime data object");
-            e.printStackTrace();
-        }
-
-        // TODO Fix - do not add duplicates
-        for (StopTime.Builder newStopTime : newStopTimes) {
-            stopTimeRepository.save(newStopTime.build());
-        }
-
-        log.info("Metra Stop Times loading completed");
 
     }
 
@@ -165,8 +138,35 @@ public class MetraUpdates {
             }
         }
 
-
         log.info("Metra Trip loading completed");
+    }
+
+    @Scheduled(fixedRate = fifteenMinutesMS)
+    private void updateStopTimes() {
+
+
+
+        log.info("Load Metra Stops Times");
+        String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/stop_times";
+        StringBuffer sb = makeHttpRequest(URL);
+
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+        StopTime.Builder[] newStopTimes = new StopTime.Builder[0];
+
+        try {
+            newStopTimes = objectMapper.readValue(sb.toString(), StopTime.Builder[].class);
+        } catch (JsonProcessingException e) {
+            log.error("failed to map stopTime data to stopTime data object");
+            e.printStackTrace();
+        }
+
+        // TODO Fix - do not add duplicates
+        for (StopTime.Builder newStopTime : newStopTimes) {
+            stopTimeRepository.save(newStopTime.build());
+        }
+
+        log.info("Metra Stop Times loading completed");
+
     }
 
     private StringBuffer makeHttpRequest(String URL){

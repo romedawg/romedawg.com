@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html layout:decorator="index" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{index.html}">
+<div layout:fragment="content">
+
+    <div class="container">
+        <p>Metra Data</p>
+
+        <table>
+            <tr>
+                <th>Departure Location</th>
+                <th>Departure Time</th>
+                <th>Arrival Location</th>
+                <th>Arrival Time</th>
+            </tr>
+            <tr th:each="schedule : ${stops}">
+                <td class="align-middle" th:text="${schedule.departureTime}"></td>
+                <td class="align-middle" th:text="${schedule.departureLocation}"></td>
+                <td class="align-middle" th:text="${schedule.arrivalTime}"></td>
+                <td class="align-middle" th:text="${schedule.arrivalLocation}"></td>
+            </tr>
+        </table>
+
+
+    </div>
+</div>
+
+</html>

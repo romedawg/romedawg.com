@@ -165,6 +165,10 @@ databaseChangeLog:
             - column:
                 name: trip_id
                 type: varchar(50)
+                constraints:
+                  nullable: false
+                  foreignKeyName: trip_id
+                  references: trip(trip_id)
             - column:
                 name: arrival_time
                 type: varchar(25)

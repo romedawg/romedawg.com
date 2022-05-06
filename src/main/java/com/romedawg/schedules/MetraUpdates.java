@@ -4,6 +4,7 @@ import com.romedawg.domain.Metra.Route;
 import com.romedawg.domain.Metra.Stop;
 import com.romedawg.domain.Metra.StopTime;
 import com.romedawg.domain.Metra.Trip;
+import com.romedawg.domain.customSchedules.HinsdaleSchedule;
 import com.romedawg.repository.Metra.RouteRepository;
 import com.romedawg.repository.Metra.StopRepository;
 import com.romedawg.repository.Metra.StopTimeRepository;
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 
+import com.romedawg.repository.Metra.customSchedules.HinsdaleRepository;
 import com.slack.api.Slack;
 import com.slack.api.webhook.Payload;
 import com.slack.api.webhook.WebhookResponse;
@@ -29,6 +31,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 @Component
@@ -45,6 +49,7 @@ public class MetraUpdates {
     private StopRepository stopRepository;
     private StopTimeRepository stopTimeRepository;
     private TripRepository tripRepository;
+    private HinsdaleRepository hinsdaleRepository;
 
     ObjectMapper objectMapper = new ObjectMapper();
 
@@ -56,9 +61,9 @@ public class MetraUpdates {
     @Value("${SLACK_WEBHOOK}")
     private String webHookUrl;
 
-    // These are Routes that should rarely change, if ever
+//     These are Routes that should rarely change, if ever
     @Scheduled(fixedRate = twentyFourHoursMS)
-    private void updateRoutes() {
+    private void updateRoutes(){
 
         log.info("Load Metra Routes every 24 hours");
         String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/routes";
@@ -70,8 +75,7 @@ public class MetraUpdates {
         try {
             newRoutes = objectMapper.readValue(sb.toString(), Route.Builder[].class);
         } catch (JsonProcessingException e) {
-            log.error("failed to map stopTime data to stopTime data object");
-            e.printStackTrace();
+            log.error("failed to map stopTime data to stopTime data object", e );
         }
 
         for (Route.Builder newroute : newRoutes) {
@@ -105,7 +109,6 @@ public class MetraUpdates {
             if (stopRepository.findStopByStopId(newstop.build().getStopId()) != null) {
                 continue;
             } else {
-                log.info(String.format("stop id: %s", newstop.build().getStopId()));
                 stopRepository.save(newstop.build());
             }
         }
@@ -115,7 +118,43 @@ public class MetraUpdates {
     }
 
     @Scheduled(fixedRate = fifteenMinutesMS)
+    private void updateTrips(){
+
+        log.info("Load Metra Trip Times");
+        String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/trips";
+        StringBuffer sb = makeHttpRequest(URL);
+
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+        Trip.Builder[] newTrips = new Trip.Builder[0];
+
+        try {
+            newTrips = objectMapper.readValue(sb.toString(), Trip.Builder[].class);
+        } catch (JsonProcessingException e) {
+            log.error("failed to map trip data to Trip data object", e);
+        }
+
+        for (Trip.Builder newTrip : newTrips) {
+            if (tripRepository.getTripById(newTrip.build().getTripId()) != null) {
+                continue;
+            } else {
+                tripRepository.save(newTrip.build());
+            }
+        }
+
+        log.info("Metra Trip loading completed");
+    }
+
+    @Scheduled(fixedRate = fifteenMinutesMS)
     private void updateStopTimes() {
+
+        // Trip needs to be loaded first
+        if (tripRepository.getTripCount() == 0){
+            try{
+                TimeUnit.SECONDS.sleep(30);
+            }catch (InterruptedException ie){
+                ie.printStackTrace();
+            }
+        }
 
         log.info("Load Metra Stops Times");
         String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/stop_times";
@@ -141,32 +180,29 @@ public class MetraUpdates {
     }
 
     @Scheduled(fixedRate = fifteenMinutesMS)
-    private void updateTrips(){
+    private void updateHinsdaleSchedule() {
 
-        log.info("Load Metra Trip Times");
-        String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/trips";
-        StringBuffer sb = makeHttpRequest(URL);
+        log.info("Updating Hinsdale Schedule Domain object");
+        // Seacth for all stops with hinsdale for trip_id.
+        // Iterate through the each trip_id and grab the hindale arrivle time and CUS arrivle time
+        // populate the hinsdaleSchedule domain mode
+        // save each trip_id
 
-        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-        Trip.Builder[] newTrips = new Trip.Builder[0];
+        List<String> BNSFIds = tripRepository.getTripIdByStopId("HINSDALE");
 
-        try {
-            newTrips = objectMapper.readValue(sb.toString(), Trip.Builder[].class);
-        } catch (JsonProcessingException e) {
-            log.error("failed to map trip data to Trip data object");
-            e.printStackTrace();
+        for (String tripID: BNSFIds){
+
+            // checkout if trip ID and arrival time already exist.
+            String hinsdaleDepartureTime = stopTimeRepository.getArrivalTime(tripID, "HINSDALE");
+            String cusArrivalTime = stopTimeRepository.getArrivalTime(tripID, "CUS");
+
+            HinsdaleSchedule hinsdaleSchedule = new HinsdaleSchedule("Chicago Union Station", cusArrivalTime, "Hinsdale Stop", hinsdaleDepartureTime, tripID);
+
+            hinsdaleRepository.save(hinsdaleSchedule);
+
         }
 
-        for (Trip.Builder newTrip : newTrips) {
-            if (tripRepository.getTripById(newTrip.build().getTripId()) != null) {
-                continue;
-            } else {
-                tripRepository.save(newTrip.build());
-            }
-        }
 
-
-        log.info("Metra Trip loading completed");
     }
 
     private StringBuffer makeHttpRequest(String URL){
@@ -223,10 +259,11 @@ public class MetraUpdates {
 
     }
 
-    public MetraUpdates(RouteRepository routeRepository, StopRepository stopRepository, StopTimeRepository stopTimeRepository, TripRepository tripRepository) {
+    public MetraUpdates(RouteRepository routeRepository, StopRepository stopRepository, StopTimeRepository stopTimeRepository, TripRepository tripRepository, HinsdaleRepository hinsdaleRepository) {
         this.routeRepository = routeRepository;
         this.stopRepository = stopRepository;
         this.stopTimeRepository = stopTimeRepository;
         this.tripRepository = tripRepository;
+        this.hinsdaleRepository = hinsdaleRepository;
     }
 }

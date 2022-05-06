@@ -6,7 +6,20 @@
     <div class="container">
         <p>Metra Data</p>
 
-        <p>TODO insert table here</p>
+        <table>
+            <tr>
+                <th>Departure Location</th>
+                <th>Departure Time</th>
+                <th>Arrival Location</th>
+                <th>Arrival Time</th>
+            </tr>
+            <tr th:each="schedule : ${stops}">
+                <td class="align-middle" th:text="${schedule.departureTime}"></td>
+                <td class="align-middle" th:text="${schedule.departureLocation}"></td>
+                <td class="align-middle" th:text="${schedule.arrivalTime}"></td>
+                <td class="align-middle" th:text="${schedule.arrivalLocation}"></td>
+            </tr>
+        </table>
 
 
     </div>

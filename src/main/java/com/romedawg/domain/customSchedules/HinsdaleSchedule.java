@@ -1,25 +1,73 @@
 package com.romedawg.domain.customSchedules;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name="hinsdale_schedule")
 public class HinsdaleSchedule {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "id")
     private Long id;
+
+    @Column(name = "trip_id", unique = true)
     private String tripId;
-    private String pickupTime;
+
+    @Column(name = "departure_time")
+    private String departureTime;
+
+    @Column(name = "departure_location")
+    private String departureLocation;
+
+    @Column(name = "arrival_time")
     private String arrivalTime;
 
-    public HinsdaleSchedule() {
+    @Column(name = "arrival_location")
+    private String arrivalLocation;
+
+    public HinsdaleSchedule(String arrivalLocation, String arrivalTime, String departureLocation, String departureTime, String tripId) {
+        this.arrivalLocation = arrivalLocation;
+        this.arrivalTime = arrivalTime;
+        this.departureLocation = departureLocation;
+        this.departureTime = departureTime;
+        this.tripId = tripId;
     }
 
-    public HinsdaleSchedule(String tripId, String pickupTime, String arrivalTime) {
-        this.tripId = tripId;
-        this.pickupTime = pickupTime;
+    public void HinsdaleScheduleCustom(String arrivalLocation, String arrivalTime, String departureLocation, String departureTime, String tripId) {
+        this.arrivalLocation = arrivalLocation;
         this.arrivalTime = arrivalTime;
+        this.departureLocation = departureLocation;
+        this.departureTime = departureTime;
+        this.tripId = tripId;
+    }
+
+    public HinsdaleSchedule() {
+
+    }
+
+    public String getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(String departureTime) {
+        this.departureTime = departureTime;
+    }
+
+    public String getDepartureLocation() {
+        return departureLocation;
+    }
+
+    public void setDepartureLocation(String departureLocation) {
+        this.departureLocation = departureLocation;
+    }
+
+    public String getArrivalLocation() {
+        return arrivalLocation;
+    }
+
+    public void setArrivalLocation(String arrivalLocations) {
+        this.arrivalLocation = arrivalLocations;
     }
 
     public String getTripId() {
@@ -31,11 +79,11 @@ public class HinsdaleSchedule {
     }
 
     public String getPickupTime() {
-        return pickupTime;
+        return departureTime;
     }
 
-    public void setPickupTime(String pickupTime) {
-        this.pickupTime = pickupTime;
+    public void setPickupTime(String departureTime) {
+        this.departureTime = departureTime;
     }
 
     public String getArrivalTime() {
@@ -46,12 +94,4 @@ public class HinsdaleSchedule {
         this.arrivalTime = arrivalTime;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Id
-    public Long getId() {
-        return id;
-    }
 }

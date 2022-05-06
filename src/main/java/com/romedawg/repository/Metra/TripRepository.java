@@ -13,7 +13,7 @@ import java.util.List;
 public interface TripRepository extends JpaRepository<Trip, Long> {
 
     // Used as a check for stop_time loading in MetraUpdates
-    @Query("SELECT count(t.tripId) FROM Trip AS t WHERE t.tripId = (:trip_id)")
+    @Query("SELECT count(t.tripId) FROM Trip AS t")
     int getTripCount();
 
     @Query("SELECT t.tripId FROM Trip AS t WHERE t.tripId = (:trip_id)")

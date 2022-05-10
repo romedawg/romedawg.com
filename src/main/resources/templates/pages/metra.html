@@ -14,10 +14,14 @@
                 <th>Arrival Time</th>
             </tr>
             <tr th:each="schedule : ${stops}">
-                <td class="align-middle" th:text="${schedule.departureTime}"></td>
-                <td class="align-middle" th:text="${schedule.departureLocation}"></td>
-                <td class="align-middle" th:text="${schedule.arrivalTime}"></td>
-                <td class="align-middle" th:text="${schedule.arrivalLocation}"></td>
+                <td class="align-middle" th:text="${schedule}"></td>
+<!--                <td class="align-middle" th:text="${schedule.departureTime}"></td>-->
+                <td class="align-middle" th:text="${schedule}"></td>
+<!--                <td class="align-middle" th:text="${schedule.departureLocation}"></td>-->
+<!--                <td class="align-middle" th:text="${schedule.arrivalTime}"></td>-->
+                <td class="align-middle" th:text="${schedule}"></td>
+<!--                <td class="align-middle" th:text="${schedule.arrivalLocation}"></td>-->
+                <td class="align-middle" th:text="${schedule}"></td>
             </tr>
         </table>
 

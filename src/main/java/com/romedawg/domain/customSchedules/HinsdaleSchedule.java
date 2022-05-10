@@ -11,7 +11,7 @@ public class HinsdaleSchedule {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "trip_id", unique = true)
+    @Column(name = "trip_id")
     private String tripId;
 
     @Column(name = "departure_time")
@@ -26,19 +26,24 @@ public class HinsdaleSchedule {
     @Column(name = "arrival_location")
     private String arrivalLocation;
 
-    public HinsdaleSchedule(String arrivalLocation, String arrivalTime, String departureLocation, String departureTime, String tripId) {
+    @Column(name = "travel_minutes")
+    private long travelMinutes;
+
+    public HinsdaleSchedule(String arrivalLocation, String arrivalTime, String departureLocation, String departureTime, long travelMinutes, String tripId) {
         this.arrivalLocation = arrivalLocation;
         this.arrivalTime = arrivalTime;
         this.departureLocation = departureLocation;
         this.departureTime = departureTime;
+        this.travelMinutes = travelMinutes;
         this.tripId = tripId;
     }
 
-    public void HinsdaleScheduleCustom(String arrivalLocation, String arrivalTime, String departureLocation, String departureTime, String tripId) {
+    public void HinsdaleScheduleCustom(String arrivalLocation, String arrivalTime, String departureLocation, String departureTime, long travelMinutes, String tripId) {
         this.arrivalLocation = arrivalLocation;
         this.arrivalTime = arrivalTime;
         this.departureLocation = departureLocation;
         this.departureTime = departureTime;
+        this.travelMinutes = travelMinutes;
         this.tripId = tripId;
     }
 
@@ -94,4 +99,11 @@ public class HinsdaleSchedule {
         this.arrivalTime = arrivalTime;
     }
 
+    public long getTravel_minutes() {
+        return travelMinutes;
+    }
+
+    public void setTravel_minutes(long travelMinutes) {
+        this.travelMinutes = travelMinutes;
+    }
 }

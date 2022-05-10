@@ -29,6 +29,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -62,122 +70,124 @@ public class MetraUpdates {
     private String webHookUrl;
 
 //     These are Routes that should rarely change, if ever
-    @Scheduled(fixedRate = twentyFourHoursMS)
-    private void updateRoutes(){
-
-        log.info("Load Metra Routes every 24 hours");
-        String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/routes";
-        StringBuffer sb = makeHttpRequest(URL);
-
-        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-        Route.Builder[] newRoutes = new Route.Builder[0];
-
-        try {
-            newRoutes = objectMapper.readValue(sb.toString(), Route.Builder[].class);
-        } catch (JsonProcessingException e) {
-            log.error("failed to map stopTime data to stopTime data object", e );
-        }
-
-        for (Route.Builder newroute : newRoutes) {
-            if (routeRepository.getRouteID(newroute.build().getRouteId()) != null) {
-            } else {
-                log.info(String.format("Route %s does not exist, adding into db", newroute.build().getRouteId()));
-                routeRepository.save(newroute.build());
-            }
-        }
-        log.info("Metra Route loading completed");
-    }
-
-    // These are stops that should rarely change
-    @Scheduled(fixedRate = twentyFourHoursMS)
-    private void updateStops() {
-
-        log.info("Load Metra Stops");
-        String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/stops";
-        StringBuffer sb = makeHttpRequest(URL);
-
-        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-        Stop.Builder[] newStops = new Stop.Builder[0];
-        try {
-            newStops = objectMapper.readValue(sb.toString(), Stop.Builder[].class);
-        } catch (JsonProcessingException e) {
-            log.error("failed to map stopTime data to stopTime data object");
-            e.printStackTrace();
-        }
-
-        for (Stop.Builder newstop : newStops) {
-            if (stopRepository.findStopByStopId(newstop.build().getStopId()) != null) {
-                continue;
-            } else {
-                stopRepository.save(newstop.build());
-            }
-        }
-
-        log.info("Metra Stops loading completed");
-
-    }
-
-    @Scheduled(fixedRate = fifteenMinutesMS)
-    private void updateTrips(){
-
-        log.info("Load Metra Trip Times");
-        String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/trips";
-        StringBuffer sb = makeHttpRequest(URL);
-
-        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-        Trip.Builder[] newTrips = new Trip.Builder[0];
-
-        try {
-            newTrips = objectMapper.readValue(sb.toString(), Trip.Builder[].class);
-        } catch (JsonProcessingException e) {
-            log.error("failed to map trip data to Trip data object", e);
-        }
-
-        for (Trip.Builder newTrip : newTrips) {
-            if (tripRepository.getTripById(newTrip.build().getTripId()) != null) {
-                continue;
-            } else {
-                tripRepository.save(newTrip.build());
-            }
-        }
-
-        log.info("Metra Trip loading completed");
-    }
-
-    @Scheduled(fixedRate = fifteenMinutesMS)
-    private void updateStopTimes() {
-
-        // Trip needs to be loaded first
-        if (tripRepository.getTripCount() == 0){
-            try{
-                TimeUnit.SECONDS.sleep(30);
-            }catch (InterruptedException ie){
-                ie.printStackTrace();
-            }
-        }
-
-        log.info("Load Metra Stops Times");
-        String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/stop_times";
-        StringBuffer sb = makeHttpRequest(URL);
-
-        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-        StopTime.Builder[] newStopTimes = new StopTime.Builder[0];
-
-        try {
-            newStopTimes = objectMapper.readValue(sb.toString(), StopTime.Builder[].class);
-        } catch (JsonProcessingException e) {
-            log.error("failed to map stopTime data to stopTime data object");
-            e.printStackTrace();
-        }
-
-        // TODO Fix - do not add duplicates
-        for (StopTime.Builder newStopTime : newStopTimes) {
-            stopTimeRepository.save(newStopTime.build());
-        }
-
-        log.info("Metra Stop Times loading completed");
-
-    }
+//    @Scheduled(fixedRate = twentyFourHoursMS)
+//    private void updateRoutes(){
+//
+//        log.info("Load Metra Routes every 24 hours");
+//        String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/routes";
+//        StringBuffer sb = makeHttpRequest(URL);
+//
+//        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+//        Route.Builder[] newRoutes = new Route.Builder[0];
+//
+//        try {
+//            newRoutes = objectMapper.readValue(sb.toString(), Route.Builder[].class);
+//        } catch (JsonProcessingException e) {
+//            log.error("failed to map stopTime data to stopTime data object", e );
+//        }
+//
+//        for (Route.Builder newroute : newRoutes) {
+//            if (routeRepository.getRouteID(newroute.build().getRouteId()) != null) {
+//            } else {
+//                log.info(String.format("Route %s does not exist, adding into db", newroute.build().getRouteId()));
+//                routeRepository.save(newroute.build());
+//            }
+//        }
+//        log.info("Metra Route loading completed");
+//    }
+//
+//    // These are stops that should rarely change
+//    @Scheduled(fixedRate = twentyFourHoursMS)
+//    private void updateStops() {
+//
+//        log.info("Load Metra Stops");
+//        String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/stops";
+//        StringBuffer sb = makeHttpRequest(URL);
+//
+//        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+//        Stop.Builder[] newStops = new Stop.Builder[0];
+//        try {
+//            newStops = objectMapper.readValue(sb.toString(), Stop.Builder[].class);
+//        } catch (JsonProcessingException e) {
+//            log.error("failed to map stopTime data to stopTime data object");
+//            e.printStackTrace();
+//        }
+//
+//        for (Stop.Builder newstop : newStops) {
+//            if (stopRepository.findStopByStopId(newstop.build().getStopId()) != null) {
+//                continue;
+//            } else {
+//                stopRepository.save(newstop.build());
+//            }
+//        }
+//
+//        log.info("Metra Stops loading completed");
+//
+//    }
+//
+//    @Scheduled(fixedRate = fifteenMinutesMS)
+//    private void updateTrips(){
+//
+//        log.info("Load Metra Trip Times");
+//        String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/trips";
+//        StringBuffer sb = makeHttpRequest(URL);
+//
+//        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+//        Trip.Builder[] newTrips = new Trip.Builder[0];
+//
+//        try {
+//            newTrips = objectMapper.readValue(sb.toString(), Trip.Builder[].class);
+//        } catch (JsonProcessingException e) {
+//            log.error("failed to map trip data to Trip data object", e);
+//        }
+//
+//        for (Trip.Builder newTrip : newTrips) {
+//            if (tripRepository.getTripById(newTrip.build().getTripId()) != null) {
+//                continue;
+//            } else {
+//                tripRepository.save(newTrip.build());
+//            }
+//        }
+//
+//        log.info("Metra Trip loading completed");
+//    }
+//
+//    @Scheduled(fixedRate = fifteenMinutesMS)
+//    private void updateStopTimes() {
+//
+//        // Trip needs to be loaded first
+//        if (tripRepository.getTripCount() == 0){
+//            try{
+//                TimeUnit.SECONDS.sleep(30);
+//            }catch (InterruptedException ie){
+//                ie.printStackTrace();
+//            }
+//        }
+//
+//        log.info("Load Metra Stops Times");
+//        String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/stop_times";
+//        StringBuffer sb = makeHttpRequest(URL);
+//
+//        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+//        StopTime.Builder[] newStopTimes = new StopTime.Builder[0];
+//
+//        try {
+//            newStopTimes = objectMapper.readValue(sb.toString(), StopTime.Builder[].class);
+//        } catch (JsonProcessingException e) {
+//            log.error("failed to map stopTime data to stopTime data object");
+//            e.printStackTrace();
+//        }
+//
+//        // TODO Fix - do not add duplicates
+//        // query hinsdale stop for with newStopTime.arrivale_time if exists
+//
+//        for (StopTime.Builder newStopTime : newStopTimes) {
+//            stopTimeRepository.save(newStopTime.build());
+//        }
+//
+//        log.info("Metra Stop Times loading completed");
+//
+//    }
 
     @Scheduled(fixedRate = fifteenMinutesMS)
     private void updateHinsdaleSchedule() {
@@ -192,17 +202,32 @@ public class MetraUpdates {
 
         for (String tripID: BNSFIds){
 
-            // checkout if trip ID and arrival time already exist.
+
+            // checkout if the arrival time already exist.
+            // Each trip_id can have 4 of the same arrival/departure times.. believe that's because 4 train carts per trip_id
             String hinsdaleDepartureTime = stopTimeRepository.getArrivalTime(tripID, "HINSDALE");
             String cusArrivalTime = stopTimeRepository.getArrivalTime(tripID, "CUS");
+            long travelMinutes = 0;
+            LocalTime timeConvertedDepTime;
+            LocalTime timeConvertedArrivalTime;
+            if (cusArrivalTime.startsWith("24")){
+                break;
+            }else {
+                timeConvertedDepTime = LocalTime.parse( hinsdaleDepartureTime ) ;
+                timeConvertedArrivalTime = LocalTime.parse( cusArrivalTime ) ;
+                travelMinutes = ChronoUnit.MINUTES.between(timeConvertedDepTime,timeConvertedArrivalTime );
+            }
 
-            HinsdaleSchedule hinsdaleSchedule = new HinsdaleSchedule("Chicago Union Station", cusArrivalTime, "Hinsdale Stop", hinsdaleDepartureTime, tripID);
+            System.out.println("hinsdale deptature time: " + timeConvertedDepTime+ "arrival time: " + timeConvertedArrivalTime);
+            System.out.println("travel time: " + travelMinutes);
 
-            hinsdaleRepository.save(hinsdaleSchedule);
+            String checkHinsdaleStopArrivalTime = hinsdaleRepository.getTripDepartureTime(hinsdaleDepartureTime);
+            if (checkHinsdaleStopArrivalTime == null){
+                HinsdaleSchedule hinsdaleSchedule = new HinsdaleSchedule("Chicago Union Station", cusArrivalTime, "Hinsdale Stop", hinsdaleDepartureTime, travelMinutes, tripID);
+                hinsdaleRepository.save(hinsdaleSchedule);
+            }
 
         }
-
-
     }
 
     private StringBuffer makeHttpRequest(String URL){

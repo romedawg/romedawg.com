@@ -4,24 +4,22 @@
 <div layout:fragment="content">
 
     <div class="container">
-        <p>Metra Data</p>
+        <p>Metra Schedule By Stop</p>
 
         <table>
             <tr>
-                <th>Departure Location</th>
-                <th>Departure Time</th>
-                <th>Arrival Location</th>
-                <th>Arrival Time</th>
+                <th style="width: 20%">Departure Location</th>
+                <th style="width: 20%">Departure Time</th>
+                <th style="width: 20%">Arrival Location</th>
+                <th style="width: 20%">Arrival Time</th>
+                <th style="width: 20%">Travel Minutes</th>
             </tr>
             <tr th:each="schedule : ${stops}">
-                <td class="align-middle" th:text="${schedule}"></td>
-<!--                <td class="align-middle" th:text="${schedule.departureTime}"></td>-->
-                <td class="align-middle" th:text="${schedule}"></td>
-<!--                <td class="align-middle" th:text="${schedule.departureLocation}"></td>-->
-<!--                <td class="align-middle" th:text="${schedule.arrivalTime}"></td>-->
-                <td class="align-middle" th:text="${schedule}"></td>
-<!--                <td class="align-middle" th:text="${schedule.arrivalLocation}"></td>-->
-                <td class="align-middle" th:text="${schedule}"></td>
+                <td class="align-middle" th:text="${schedule.departureTime}"></td>
+                <td class="align-middle" th:text="${schedule.departureLocation}"></td>
+                <td class="align-middle" th:text="${schedule.arrivalTime}"></td>
+                <td class="align-middle" th:text="${schedule.arrivalLocation}"></td>
+                <td class="align-right" th:text="${schedule.travelMinutes}"></td>
             </tr>
         </table>
 

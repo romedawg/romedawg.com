@@ -38,15 +38,6 @@ public class HinsdaleSchedule {
         this.tripId = tripId;
     }
 
-    public void HinsdaleScheduleCustom(String arrivalLocation, String arrivalTime, String departureLocation, String departureTime, long travelMinutes, String tripId) {
-        this.arrivalLocation = arrivalLocation;
-        this.arrivalTime = arrivalTime;
-        this.departureLocation = departureLocation;
-        this.departureTime = departureTime;
-        this.travelMinutes = travelMinutes;
-        this.tripId = tripId;
-    }
-
     public HinsdaleSchedule() {
 
     }
@@ -99,11 +90,11 @@ public class HinsdaleSchedule {
         this.arrivalTime = arrivalTime;
     }
 
-    public long getTravel_minutes() {
+    public long getTravelMinutes() {
         return travelMinutes;
     }
 
-    public void setTravel_minutes(long travelMinutes) {
+    public void setTravelMinutes(long travelMinutes) {
         this.travelMinutes = travelMinutes;
     }
 }

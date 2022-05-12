@@ -27,8 +27,7 @@ public class MetraController {
     @GetMapping("/metra")
     public String todo(Model model)  {
 
-        // Works but shows up as a String, TODO how to split?
-        List<String> hinsdaleSchedule = hinsdaleRepository.getScheduleByDepartureTime();
+        List<HinsdaleSchedule> hinsdaleSchedule = hinsdaleRepository.findAll();
 
         model.addAttribute("stops", hinsdaleSchedule);
         return "pages/metra";

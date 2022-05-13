@@ -31,6 +31,7 @@ public class MetraController {
     public String metra(Model model)  {
 
         List<HinsdaleSchedule> hinsdaleSchedule = hinsdaleRepository.findAllByDepartureLocation("HINSDALE");
+        model.addAttribute("destination", "Chicago Union Station");
 
         model.addAttribute("stops", hinsdaleSchedule);
         return "pages/metra";
@@ -40,6 +41,7 @@ public class MetraController {
     public String metraToChicago(Model model)  {
 
         List<HinsdaleSchedule> hinsdaleSchedule = hinsdaleRepository.findAllByDepartureLocation("HINSDALE");
+        model.addAttribute("destination", "Chicago Union Station");
 
         model.addAttribute("stops", hinsdaleSchedule);
         return "pages/metra";
@@ -49,6 +51,8 @@ public class MetraController {
     public String metraFromChicago(Model model)  {
 
         List<HinsdaleSchedule> hinsdaleSchedule = hinsdaleRepository.findAllByDepartureLocation("CUS");
+        model.addAttribute("destination", "Hinsdale");
+
 
         model.addAttribute("stops", hinsdaleSchedule);
         return "pages/metra";

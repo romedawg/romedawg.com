@@ -5,6 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+
+// TODO need to create this/flatten the json data
 public class Alerts {
 
     @Id

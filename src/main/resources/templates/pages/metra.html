@@ -6,21 +6,25 @@
     <div class="container">
         <p>Metra Schedule By Stop</p>
 
-        <table>
-            <tr>
-                <th style="width: 20%">Departure Location</th>
-                <th style="width: 20%">Departure Time</th>
-                <th style="width: 20%">Arrival Location</th>
-                <th style="width: 20%">Arrival Time</th>
-                <th style="width: 20%">Travel Minutes</th>
-            </tr>
-            <tr th:each="schedule : ${stops}">
-                <td class="align-middle" th:text="${schedule.departureTime}"></td>
-                <td class="align-middle" th:text="${schedule.departureLocation}"></td>
-                <td class="align-middle" th:text="${schedule.arrivalTime}"></td>
-                <td class="align-middle" th:text="${schedule.arrivalLocation}"></td>
-                <td class="align-right" th:text="${schedule.travelMinutes}"></td>
-            </tr>
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Departure Location</th>
+                    <th scope="col">Departure Time</th>
+                    <th scope="col">Arrival Location</th>
+                    <th scope="col">Arrival Time</th>
+                    <th scope="col">Travel Minutes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="schedule : ${stops}">
+                    <td th:text="${schedule.departureLocation}"></td>
+                    <td th:text="${schedule.departureTime}"></td>
+                    <td th:text="${schedule.arrivalLocation}"></td>
+                    <td th:text="${schedule.arrivalTime}"></td>
+                    <td th:text="${schedule.travelMinutes}"></td>
+                </tr>
+            </tbody>
         </table>
 
 

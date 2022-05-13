@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -18,4 +20,5 @@ public interface HinsdaleRepository extends JpaRepository<HinsdaleSchedule, Long
     @Query("SELECT DISTINCT hs.departureTime FROM HinsdaleSchedule as hs WHERE hs.departureTime= (:departure_time)")
     String getTripDepartureTime(@Param("departure_time") String departure_time);
 
+    List<HinsdaleSchedule> findAllByDepartureLocation(String departureLocation);
 }

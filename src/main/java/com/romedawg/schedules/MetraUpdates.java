@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -139,6 +140,7 @@ public class MetraUpdates {
 //    private void updateStopTimes() {
 //
 //        // Trip needs to be loaded first
+//        // Check if trips existed, if not, back off a bit
 //        if (tripRepository.getTripCount() == 0){
 //            try{
 //                TimeUnit.SECONDS.sleep(30);
@@ -174,33 +176,64 @@ public class MetraUpdates {
 
         log.debug("Updating Hinsdale Schedule Domain object");
 
-        List<String> BNSFIds = tripRepository.getTripIdByStopId("HINSDALE");
+        List<String> BNSFIds = tripRepository.getTripIdDirectionIDByStopId("HINSDALE");
 
-        for (String tripID: BNSFIds){
+        String departureTime;
+        String arrivalTime;
+        LocalTime timeConvertedDepTime;
+        LocalTime timeConvertedArrivalTime;
+        long travelMinutes;
+        String arrivalLocation;
+        String departureLocation;
 
+        for (String tripIDInfo: BNSFIds){
 
-            // checkout if the arrival time already exist.
-            // Each trip_id can have 4 of the same arrival/departure times.. believe that's because 4 train carts per trip_id
-            String hinsdaleDepartureTime = stopTimeRepository.getArrivalTime(tripID, "HINSDALE");
-            String cusArrivalTime = stopTimeRepository.getArrivalTime(tripID, "CUS");
-            long travelMinutes = 0;
-            LocalTime timeConvertedDepTime;
-            LocalTime timeConvertedArrivalTime;
-            if (cusArrivalTime.startsWith("24")){
-                log.debug("Chicago Union Station starts with 24 hour, skipping");
-                break;
-            }else {
-                timeConvertedDepTime = LocalTime.parse( hinsdaleDepartureTime ) ;
-                timeConvertedArrivalTime = LocalTime.parse( cusArrivalTime ) ;
-                travelMinutes = ChronoUnit.MINUTES.between(timeConvertedDepTime,timeConvertedArrivalTime );
+            // Get Trip info for both direction(To Chicago and From Chicago)
+            // 1 is train is going to Chicago
+            // 0 is train is going away from Chicago
+            String[] tripInfo = tripIDInfo.split(",");
+            String tripID = tripInfo[0];
+            String directionNumber = tripInfo[1];
+
+            if (directionNumber.equals("1")){
+                departureTime = stopTimeRepository.getArrivalTime(tripID, "HINSDALE");
+                arrivalTime = stopTimeRepository.getArrivalTime(tripID, "CUS");
+                arrivalLocation = "CUS";
+                departureLocation = "HINSDALE";
+
+                if (arrivalTime.startsWith("24")){
+                    log.debug("Chicago Union Station starts with 24 hour, skipping");
+                    break;
+                }else {
+                    timeConvertedDepTime = LocalTime.parse( departureTime ) ;
+                    timeConvertedArrivalTime = LocalTime.parse( arrivalTime ) ;
+                    travelMinutes = ChronoUnit.MINUTES.between(timeConvertedDepTime,timeConvertedArrivalTime );
+                    log.debug("departure time: " + departureTime + "arrivalTime: " + arrivalTime + "travel time: " +travelMinutes);
+                }
+            } else {
+                departureTime = stopTimeRepository.getArrivalTime(tripID, "CUS");
+                arrivalTime = stopTimeRepository.getArrivalTime(tripID, "HINSDALE");
+                arrivalLocation = "HINSDALE";
+                departureLocation = "CUS";
+
+                if (arrivalTime.startsWith("24")){
+                    log.debug("Chicago Union Station starts with 24 hour, skipping");
+                    break;
+                }else {
+                    timeConvertedDepTime = LocalTime.parse( departureTime ) ;
+                    timeConvertedArrivalTime = LocalTime.parse( arrivalTime ) ;
+                    travelMinutes = ChronoUnit.MINUTES.between(timeConvertedDepTime, timeConvertedArrivalTime );
+                    log.debug("departure time: " + departureTime + "arrivalTime: " + arrivalTime + "travel time: " +travelMinutes);
+                }
+
             }
 
-            log.debug("hinsdale deptature time: " + timeConvertedDepTime+ "arrival time: " + timeConvertedArrivalTime);
-            log.debug("travel time: " + travelMinutes);
 
-            String checkHinsdaleStopArrivalTime = hinsdaleRepository.getTripDepartureTime(hinsdaleDepartureTime);
+            log.debug("Query if departure time already exists by stop");
+            String checkHinsdaleStopArrivalTime = hinsdaleRepository.getTripDepartureTime(departureTime);
             if (checkHinsdaleStopArrivalTime == null){
-                HinsdaleSchedule hinsdaleSchedule = new HinsdaleSchedule("Union Station", cusArrivalTime, "Hinsdale", hinsdaleDepartureTime, travelMinutes, tripID);
+                log.debug("Save trip information by departure time");
+                HinsdaleSchedule hinsdaleSchedule = new HinsdaleSchedule(arrivalLocation, arrivalTime, departureLocation, departureTime, travelMinutes, tripID);
                 hinsdaleRepository.save(hinsdaleSchedule);
             }
 

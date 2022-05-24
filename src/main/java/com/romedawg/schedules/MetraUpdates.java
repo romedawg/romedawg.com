@@ -25,7 +25,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -77,6 +76,7 @@ public class MetraUpdates {
                 routeRepository.save(newroute.build());
             }
         }
+
         log.info("Metra Route loading completed");
     }
 

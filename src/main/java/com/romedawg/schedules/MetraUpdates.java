@@ -4,7 +4,7 @@ import com.romedawg.domain.Metra.Route;
 import com.romedawg.domain.Metra.Stop;
 import com.romedawg.domain.Metra.StopTime;
 import com.romedawg.domain.Metra.Trip;
-import com.romedawg.domain.customSchedules.HinsdaleSchedule;
+import com.romedawg.domain.Metra.customSchedules.HinsdaleSchedule;
 import com.romedawg.repository.Metra.RouteRepository;
 import com.romedawg.repository.Metra.StopRepository;
 import com.romedawg.repository.Metra.StopTimeRepository;
@@ -25,7 +25,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -77,6 +76,7 @@ public class MetraUpdates {
                 routeRepository.save(newroute.build());
             }
         }
+
         log.info("Metra Route loading completed");
     }
 

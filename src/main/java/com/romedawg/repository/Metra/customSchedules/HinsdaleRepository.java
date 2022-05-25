@@ -1,15 +1,11 @@
 package com.romedawg.repository.Metra.customSchedules;
 
-import com.romedawg.domain.customSchedules.HinsdaleSchedule;
-import org.springframework.data.domain.Sort;
+import com.romedawg.domain.Metra.customSchedules.HinsdaleSchedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @Repository

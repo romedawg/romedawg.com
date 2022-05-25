@@ -1,21 +1,15 @@
 package com.romedawg.controller;
 
-import com.romedawg.domain.customSchedules.HinsdaleSchedule;
-import com.romedawg.domain.todo.Todo;
+import com.romedawg.domain.Metra.customSchedules.HinsdaleSchedule;
 import com.romedawg.repository.Metra.StopRepository;
-import com.romedawg.repository.Metra.TripRepository;
 import com.romedawg.repository.Metra.customSchedules.HinsdaleRepository;
-import com.romedawg.schedules.MetraUpdates;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Controller

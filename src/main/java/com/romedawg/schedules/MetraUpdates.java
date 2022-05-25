@@ -4,7 +4,7 @@ import com.romedawg.domain.Metra.Route;
 import com.romedawg.domain.Metra.Stop;
 import com.romedawg.domain.Metra.StopTime;
 import com.romedawg.domain.Metra.Trip;
-import com.romedawg.domain.customSchedules.HinsdaleSchedule;
+import com.romedawg.domain.Metra.customSchedules.HinsdaleSchedule;
 import com.romedawg.repository.Metra.RouteRepository;
 import com.romedawg.repository.Metra.StopRepository;
 import com.romedawg.repository.Metra.StopTimeRepository;

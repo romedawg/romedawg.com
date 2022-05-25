@@ -1,4 +1,4 @@
-package com.romedawg.domain.customSchedules;
+package com.romedawg.domain.Metra.customSchedules;
 
 import javax.persistence.*;
 

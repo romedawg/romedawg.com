@@ -64,6 +64,8 @@ docker run -e POSTGRES_HOST="172.17.0.1" --env-file mycredentials.txt -p 8080:80
 - METRA_API_USERNAME=key 
 - METRA_API_PASSWORD=password
 - SLACK_WEBHOOK=<SLACK_WEBHOOK>
+- TWILIO_API_KEY=api_key
+- TWILIO_API_TOKEN=api_token
 
 
 ## Setting up postgres

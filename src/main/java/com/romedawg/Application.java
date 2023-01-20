@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class Application {
 
     public static void main(String[] args) {
+        System.out.println("twilio api key" + System.getenv("TWILIO_API_KEY") );
         Twilio.init(System.getenv("TWILIO_API_KEY"), System.getenv("TWILIO_API_TOKEN"));
 
         SpringApplication.run(Application.class, args);
@@ -20,4 +21,3 @@ public class Application {
     }
 
 }
-

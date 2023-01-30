@@ -8,5 +8,4 @@ LABEL description="This is custom Docker Image for romedawg.com"
 COPY /build/libs/romedawg.jar /opt/romedawg.jar
 WORKDIR /opt/
 
-CMD ["java", "-jar", "-Dspring.profiles.active=dev", "/opt/romedawg.jar"]
-
+CMD ["java", "-jar", "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE}", "/opt/romedawg.jar"]

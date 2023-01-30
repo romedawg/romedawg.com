@@ -57,8 +57,9 @@ public class Utils {
         return buffer;
     }
 
-
     private static void SlackAlerts(String slackMessage) {
+
+        log.info("start SlackAlerts method");
         Slack slack = Slack.getInstance();
         log.info(webHookUrl);
 

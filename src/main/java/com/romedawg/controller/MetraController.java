@@ -1,7 +1,6 @@
 package com.romedawg.controller;
 
 import com.romedawg.domain.Metra.customSchedules.HinsdaleSchedule;
-import com.romedawg.repository.Metra.StopRepository;
 import com.romedawg.repository.Metra.customSchedules.HinsdaleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,6 @@ public class MetraController {
 
     @Autowired
     HinsdaleRepository hinsdaleRepository;
-    StopRepository stopRepository;
 
     @GetMapping("/metra")
     public String metra(Model model)  {

@@ -57,19 +57,28 @@ docker run -e POSTGRES_HOST="172.17.0.1" --env-file mycredentials.txt -p 8080:80
 # what components are needed?
 
 ## ENV Variables
+- SPRING_PROFILES_ACTIVE=dev
 - POSTGRES_HOST=[localhost|ipaddr]
 - POSTGRES_DATABASE=romedawg 
-- POSTGRES_USERNAME=roman 
+- POSTGRES_USERNAME=romedawg 
 - POSTGRES_PASSWORD=password 
 - METRA_API_USERNAME=key 
 - METRA_API_PASSWORD=password
 - SLACK_WEBHOOK=<SLACK_WEBHOOK>
+- TWILIO_API_KEY=AC413b62bc99bd258960b97953315b3c46
+- TWILIO_API_TOKEN=ac50139f09b054b32f9f4c9dab6e5292
 
 
 ## Setting up postgres
 https://hub.docker.com/repository/docker/romedawg/postgres-14
 
 pull down a postgres image and run it locally
+Set these variables
+```
+POSTGRES_DATABASE=romedawg 
+ADMIN_USER=roman
+ADMIN_PASSWORD=password
+```
  - docker pull romedawg/postgres-14
  - docker run -e ADMIN_USER=roman -e ADMIN_PASSWORD=password -e POSTGRES_DATABASE=romedawg -p 5432:5432 --name postgres romedawg/postgres-14
 

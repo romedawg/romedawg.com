@@ -50,6 +50,8 @@ public class MetraUpdates {
     private String metraUrlUsername;
     @Value("${METRA_API_PASSWORD}")
     private String metraUrlPassword;
+    @Value("${SLACK_WEBHOOK}")
+    private String webHookUrl;
 
 //     These are Routes that should rarely change, if ever
     @Scheduled(fixedRate = twentyFourHoursMS)
@@ -57,7 +59,7 @@ public class MetraUpdates {
 
         log.info("Load Metra Routes every 24 hours");
         String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/routes";
-        StringBuffer sb = Utils.makeHttpRequest(URL, metraUrlUsername, metraUrlPassword);
+        StringBuffer sb = Utils.makeHttpRequest(URL, metraUrlUsername, metraUrlPassword, webHookUrl);
 
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
         Route.Builder[] newRoutes = new Route.Builder[0];
@@ -85,7 +87,7 @@ public class MetraUpdates {
 
         log.info("Load Metra Stops");
         String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/stops";
-        StringBuffer sb = Utils.makeHttpRequest(URL, metraUrlUsername, metraUrlPassword);
+        StringBuffer sb = Utils.makeHttpRequest(URL, metraUrlUsername, metraUrlPassword, webHookUrl);
 
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
         Stop.Builder[] newStops = new Stop.Builder[0];
@@ -113,7 +115,7 @@ public class MetraUpdates {
 
         log.info("Load Metra Trip Times");
         String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/trips";
-        StringBuffer sb = Utils.makeHttpRequest(URL, metraUrlUsername, metraUrlPassword);
+        StringBuffer sb = Utils.makeHttpRequest(URL, metraUrlUsername, metraUrlPassword, webHookUrl);
 
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
         Trip.Builder[] newTrips = new Trip.Builder[0];
@@ -150,7 +152,7 @@ public class MetraUpdates {
 
         log.info("Load Metra Stops Times");
         String URL = "https://gtfsapi.metrarail.com/gtfs/schedule/stop_times";
-        StringBuffer sb = Utils.makeHttpRequest(URL, metraUrlUsername, metraUrlPassword);
+        StringBuffer sb = Utils.makeHttpRequest(URL, metraUrlUsername, metraUrlPassword, webHookUrl);
 
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
         StopTime.Builder[] newStopTimes = new StopTime.Builder[0];

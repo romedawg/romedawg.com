@@ -18,12 +18,9 @@ import java.util.Date;
 
 public class Utils {
 
-    @Value("${SLACK_WEBHOOK}")
-    private static String webHookUrl;
-
     private static final Logger log = LoggerFactory.getLogger(Utils.class);
 
-    public static StringBuffer makeHttpRequest(String URL, String username, String password){
+    public static StringBuffer makeHttpRequest(String URL, String username, String password, String webhookURL){
 
         log.info("Executing http request to " + URL);
         StringBuffer buffer = new StringBuffer();
@@ -51,30 +48,29 @@ public class Utils {
             }
         }catch (Exception e){
             log.error(String.format("Response code is %s for URL: %s", httpStatusCode, URL));
-            SlackAlerts("HTTP REQUEST failed for URL: " + URL + " STATUS CODE: " + httpStatusCode);
+            SlackAlerts("HTTP REQUEST failed for URL: " + URL + " STATUS CODE: " + httpStatusCode, webhookURL);
             e.printStackTrace();
         }
         return buffer;
     }
 
-    private static void SlackAlerts(String slackMessage) {
+    private static void SlackAlerts(String slackMessage, String webhookURL) {
 
         log.info("start SlackAlerts method");
         Slack slack = Slack.getInstance();
-        log.info(webHookUrl);
+        log.info(webhookURL);
 
         Date date = new Date();
 
         Payload payload = Payload.builder().text(date + " - " + slackMessage).build();
 
         try {
-            WebhookResponse response = slack.send(webHookUrl, payload);
+            WebhookResponse response = slack.send(webhookURL, payload);
             log.info("response from slack: " + response);
         } catch (IOException e){
             e.printStackTrace();
         }
 
         log.error(slackMessage);
-
     }
 }

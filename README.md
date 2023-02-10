@@ -80,7 +80,7 @@ ADMIN_USER=roman
 ADMIN_PASSWORD=password
 ```
  - docker pull romedawg/postgres-14
- - docker run -e ADMIN_USER=roman -e ADMIN_PASSWORD=password -e POSTGRES_DATABASE=romedawg -p 5432:5432 --name postgres romedawg/postgres-14
+ - docker run -d -e ADMIN_USER=roman -e ADMIN_PASSWORD=password -e POSTGRES_DATABASE=romedawg -p 5432:5432 --name postgres romedawg/postgres-14
 
 
 #### TODO

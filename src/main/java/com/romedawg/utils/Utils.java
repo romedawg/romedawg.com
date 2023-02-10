@@ -1,12 +1,10 @@
 package com.romedawg.utils;
 
-import com.romedawg.schedules.MetraUpdates;
 import com.slack.api.Slack;
 import com.slack.api.webhook.Payload;
 import com.slack.api.webhook.WebhookResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,7 +41,8 @@ public class Utils {
 
             BufferedReader bufReader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
             String inputLine;
-            while ((inputLine = bufReader.readLine()) != null){
+//            while (((inputLine = bufReader.readLine()) != null)  || ((inputLine = bufReader.readLine()) != "[") || ((inputLine = bufReader.readLine()) != "]")  ){
+            while (((inputLine = bufReader.readLine()) != null)){
                 buffer.append(inputLine);
             }
         }catch (Exception e){

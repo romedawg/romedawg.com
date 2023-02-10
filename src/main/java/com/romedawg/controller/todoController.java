@@ -2,7 +2,7 @@ package com.romedawg.controller;
 
 import com.romedawg.domain.todo.Todo;
 import com.romedawg.repository.Metra.TodoRepository;
-import com.romedawg.schedules.MetraUpdates;
+//import com.romedawg.schedules.MetraUpdates;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class todoController {
 
     private static final Logger log = LoggerFactory.getLogger(todoController.class);
 
-    private MetraUpdates metraUpdates;
+//    private MetraUpdates metraUpdates;
 
     @Autowired
     private TodoRepository todoRepository;

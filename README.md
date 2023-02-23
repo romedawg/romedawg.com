@@ -46,7 +46,7 @@ docker build -t romedawg .
 
 Run the container
 ```
-docker run -e POSTGRES_HOST="172.17.0.1" -e POSTGRES_DATABASE="romedawg" -e POSTGRES_USERNAME="postgres" -e POSTGRES_PASSWORD="password"  -p 8080:8080 romedawg
+docker run -e POSTGRES_HOST="172.17.0.1" -e POSTGRES_DATABASE="romedawg" -e POSTGRES_USERNAME="postgres" -e POSTGRES_PASSWORD="password"  -p 8080:8080 --name romedawg romedawg
 
 # PASS IN AN ENV FILE WITH THE CREDS BELOW
 docker run -e POSTGRES_HOST="172.17.0.1" --env-file mycredentials.txt -p 8080:8080 romedawg
@@ -80,7 +80,7 @@ ADMIN_USER=roman
 ADMIN_PASSWORD=password
 ```
  - docker pull romedawg/postgres-14
- - docker run -e ADMIN_USER=roman -e ADMIN_PASSWORD=password -e POSTGRES_DATABASE=romedawg -p 5432:5432 --name postgres romedawg/postgres-14
+ - docker run -d -e ADMIN_USER=roman -e ADMIN_PASSWORD=password -e POSTGRES_DATABASE=romedawg -p 5432:5432 --name postgres romedawg/postgres-14
 
 
 #### TODO

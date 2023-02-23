@@ -47,13 +47,13 @@ public class Utils {
             }
         }catch (Exception e){
             log.error(String.format("Response code is %s for URL: %s", httpStatusCode, URL));
-            SlackAlerts("HTTP REQUEST failed for URL: " + URL + " STATUS CODE: " + httpStatusCode, webhookURL);
+            slackAlerts("HTTP REQUEST failed for URL: " + URL + " STATUS CODE: " + httpStatusCode, webhookURL);
             e.printStackTrace();
         }
         return buffer;
     }
 
-    private static void SlackAlerts(String slackMessage, String webhookURL) {
+    public static void slackAlerts(String slackMessage, String webhookURL) {
 
         log.info("start SlackAlerts method");
         Slack slack = Slack.getInstance();

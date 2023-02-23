@@ -41,8 +41,8 @@ public class AlertDeserializer extends StdDeserializer<Alert> {
         alert.setVehicle(String.valueOf(alertNode.get("vehicle").textValue()));
         alert.setAlertStartDate(String.valueOf(alertNode.get("alert").get("active_period").get(0).get("start").get("low").textValue()));
         alert.setAlertEndDate(String.valueOf(alertNode.get("alert").get("active_period").get(0).get("end").get("low").textValue()));
-        alert.setTripId(String.valueOf(alertNode.get("alert").get("informed_entity").get(0).get("trip").get("route_id").textValue()));
-        alert.setRouteId(String.valueOf(alertNode.get("alert").get("informed_entity").get(0).get("trip").get("trip_id").textValue()));
+        alert.setTripId(String.valueOf(alertNode.get("alert").get("informed_entity").get(0).get("trip").get("trip_id").textValue()));
+        alert.setRouteId(String.valueOf(alertNode.get("alert").get("informed_entity").get(0).get("trip").get("route_id").textValue()));
         alert.setStartTime(String.valueOf(alertNode.get("alert").get("informed_entity").get(0).get("trip").get("start_time").textValue()));
         alert.setStartDate(String.valueOf(alertNode.get("alert").get("informed_entity").get(0).get("trip").get("start_date").textValue()));
         alert.setDirectionId(String.valueOf(alertNode.get("alert").get("informed_entity").get(0).get("trip").get("direction_id").textValue()));

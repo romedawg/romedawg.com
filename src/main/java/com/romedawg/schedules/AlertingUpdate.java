@@ -2,6 +2,7 @@ package com.romedawg.schedules;
 
 import com.romedawg.domain.Metra.Alert;
 import com.romedawg.repository.Metra.AlertRepository;
+import com.romedawg.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.DataInput;
 import java.io.IOException;
 
 /***
@@ -23,9 +23,9 @@ import java.io.IOException;
  */
 
 @Component
-public class ScheduleUpdate {
+public class AlertingUpdate {
 
-    private static Logger log = LoggerFactory.getLogger(ScheduleUpdate.class);
+    private static Logger log = LoggerFactory.getLogger(AlertingUpdate.class);
     ObjectMapper objectMapper = new ObjectMapper();
     private static final int fifteenMinutesMS = 900000;
     private AlertRepository alertRepository;
@@ -83,41 +83,22 @@ public class ScheduleUpdate {
             " }\n" +
             " }";
 
-    public ScheduleUpdate(AlertRepository alertRepository) {
+    public AlertingUpdate(AlertRepository alertRepository) {
         this.alertRepository = alertRepository;
     }
 
     @Scheduled(fixedRate = fifteenMinutesMS)
     private void alertRequest() throws IOException {
 
-        log.info("d2 json object");
         Alert alert = objectMapper.readValue(AlertTest, Alert.class);
 
-        System.out.println(alert.getId());
-        System.out.println(alert.getIsDeleted());
-        System.out.println(alert.getTripUpdate());
-        System.out.println(alert.getVehicle());
-        System.out.println(alert.getAlertStartDate());
-        System.out.println(alert.getAlertEndDate());
-        System.out.println(alert.getTripId());
-        System.out.println(alert.getRouteId());
-        System.out.println(alert.getStartDate());
-        System.out.println(alert.getStartTime());
-        System.out.println(alert.getDirectionId());
-        System.out.println(alert.getScheduleRelationship());
-        System.out.println(alert.getStopId());
-        System.out.println(alert.getCause());
-        System.out.println(alert.getEffect());
-        System.out.println(alert.getAlertUrl());
-        System.out.println(alert.getAlertHeader());
-        System.out.println(alert.getAlertDescription());
-
-        Alert newAlert = new Alert();
-        newAlert = objectMapper.readValue(AlertTest, Alert.class);
-
-
-        log.info("trying to save the object to the database meow");
-//        newAlert = objectMapper.readValue(newAlert, Alert.Builder[].class);
-        alertRepository.save(newAlert);
+        if (alertRepository.existsAlertByAlertID(alert.getId()) != null){
+            log.info("alert id: " + alert.getId() + " already exists");
+        } else {
+            log.info("adding alert: "+ alert.getId() );
+            String slackAlertMessage = "ALERT: Train " + alert.getTripId() + " " + alert.getAlertHeader() + alert.getAlertHeader();
+            Utils.slackAlerts(slackAlertMessage, webHookUrl);
+            alertRepository.save(alert);
+        }
     }
 }

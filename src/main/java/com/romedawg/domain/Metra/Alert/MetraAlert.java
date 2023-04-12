@@ -2,7 +2,6 @@ package com.romedawg.domain.Metra;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.romedawg.utils.AlertDeserializer;
-import com.romedawg.utils.ProductDeserializer;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,10 +13,11 @@ import javax.persistence.Table;
 @JsonDeserialize(using = AlertDeserializer.class)
 public class Alert {
 
+    private String alert;
     @Id
     @Column(name="id")
     private String id;
-    @Column(name = "is_deleted")
+    @Column(name = "isDeleted")
     private Boolean isDeleted;
     @Column(name = "trip_update")
     private String tripUpdate;
@@ -54,29 +54,28 @@ public class Alert {
 
     public Alert() {}
 
-//    public Alert(String id, String isDeleted, String tripUpdate, String vehicle, String alertStartDate, String alertEndDate, String tripId, String routeId, String directionId, String startTime, String startDate, String scheduleRelationship, String stopId, String cause, String effect, String alertUrl, String alertHeader, String alertDescription) {
-//        this.id = id;
-//        this.isDeleted = isDeleted;
-//        this.tripUpdate = tripUpdate;
-//        this.vehicle = vehicle;
-//        this.alertStartDate = alertStartDate;
-//        this.alertEndDate = alertEndDate;
-//        this.tripId = tripId;
-//        this.routeId = routeId;
-//        this.directionId = directionId;
-//        this.startTime = startTime;
-//        this.startDate = startDate;
-//        this.scheduleRelationship = scheduleRelationship;
-//        this.stopId = stopId;
-//        this.cause = cause;
-//        this.effect = effect;
-//        this.alertUrl = alertUrl;
-//        this.alertHeader = alertHeader;
-//        this.alertDescription = alertDescription;
-//    }
-
     public Alert(Builder builder) {
+        this.id = builder.id;
+        this.isDeleted = builder.is_deleted;
+        this.tripUpdate = builder.trip_update;
+        this.vehicle = builder.vehicle;
+        this.alert = builder.alert;
+        this.alertStartDate = builder.alertStartDate;
+        this.alertEndDate = builder.alertEndDate;
+        this.tripId = builder.tripId;
+        this.routeId = builder.routeId;
+        this.directionId = builder.directionId;
+        this.startTime = builder.startTime;
+        this.startDate = builder.startDate;
+        this.scheduleRelationship = builder.scheduleRelationship;
+        this.stopId = builder.stopId;
+        this.cause = builder.cause;
+        this.effect = builder.effect;
+        this.alertUrl = builder.alertUrl;
+        this.alertHeader = builder.alertHeader;
+        this.alertDescription = builder.alertDescription;
     }
+
 
     public String getId() {
         return id;
@@ -223,10 +222,12 @@ public class Alert {
     }
 
     public static class Builder {
+        public String vehicle;
         private String id;
-        private String isDeleted;
-        private String tripUpdate;
-        private String vehicle;
+        private String alert;
+        private Boolean isDeleted;
+        private Boolean is_deleted;
+        private String trip_update;
         private String alertStartDate;
         private String alertEndDate;
         private String tripId;
@@ -242,19 +243,41 @@ public class Alert {
         private String alertHeader;
         private String alertDescription;
 
-        public String getId() {
-            return id;
+        public String getAlert() {
+            return alert;
         }
+
+        public void setAlert(String alert) {
+            this.alert = alert;
+        }
+
+        public Boolean getis_deleted() {
+            return is_deleted;
+        }
+
+        public void setis_deleted(Boolean is_deleted) {
+            this.is_deleted = is_deleted;
+        }
+
+        public String getVehicle() {
+            return vehicle;
+        }
+
+        public void setVehicle(String vehicle) {
+            this.vehicle = vehicle;
+        }
+
+        public String getId() {return id;}
 
         public void setId(String id) {
             this.id = id;
         }
 
-        public String getIsDeleted() {
+        public Boolean getIsDeleted() {
             return isDeleted;
         }
 
-        public void setIsDeleted(String isDeleted) {
+        public void setIsDeleted(Boolean isDeleted) {
             this.isDeleted = isDeleted;
         }
 
@@ -262,12 +285,12 @@ public class Alert {
             return alertStartDate;
         }
 
-        public String getTripUpdate() {
-            return tripUpdate;
+        public String gettrip_update() {
+            return trip_update;
         }
 
-        public void setTripUpdate(String tripUpdate) {
-            this.tripUpdate = tripUpdate;
+        public void settrip_update(String trip_update) {
+            this.trip_update = trip_update;
         }
 
         public void setAlertStartDate(String alertStartDate) {
@@ -414,7 +437,7 @@ public class Alert {
  [
      {
          "id":"fa604e0d-90ed-4c74-8fc9-8d30b5cae2c3",
-         "is_deleted":false,
+         "isDeleted":false,
          "trip_update":null,
          "vehicle":null,
          "alert":{
@@ -466,7 +489,7 @@ public class Alert {
  * https://gtfsapi.metrarail.com/gtfs/alerts
  {
  "id": "cms_alert1081",S
- "is_deleted": false,
+ "isDeleted": false,
  "alert": {
  "url": {
  "translation": [

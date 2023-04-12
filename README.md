@@ -3,8 +3,7 @@
 # Java playground for roman
 
 ## Problem domain
-Overarching goal is to reduce friction.  
-For commute, I need to check 3 different sites to validate information 
+ For commute, I need to check 3 different sites to validate information 
 otherwise I can miss a train, bus, etc..  or a train is delayed, there's no bike available. 
 I can also take 2 different trains or stop(depending on when i leave or where I'm going) consolidating this info is helpful.
 
@@ -51,7 +50,7 @@ docker run -e POSTGRES_HOST="172.17.0.1" -e POSTGRES_DATABASE="romedawg" -e POST
 # PASS IN AN ENV FILE WITH THE CREDS BELOW
 docker run -e POSTGRES_HOST="172.17.0.1" --env-file mycredentials.txt -p 8080:8080 romedawg
 
-./gradlew build; docker build -t romedawg .;docker build -t romedawg .; docker run -e POSTGRES_HOST="172.17.0.1" --env-file mycredentials.txt -p 8080:8080 romedawg
+./gradlew build; docker build -t romedawg .;docker build -t romedawg .; docker run -e POSTGRES_HOST="172.17.0.1" --env-file mycredentials.txt -p 8080:8080 --name romedawg romedawg
 ```
 
 # what components are needed?

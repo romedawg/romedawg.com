@@ -1,0 +1,33 @@
+---
+modules:
+  default:
+    metrics:
+    - name: blueshift
+      type: object
+      help: Blueshift activationTime by activationTime
+      path: '{.data.actor.account.nrql.results[*]}'
+      labels:
+#        environment: beta # static label         # dynamic label
+#        timestamp: '{.timestamp}'
+        message_id: '{.messageId}'
+        activation_time: true    # static value
+        timestamp: '{.timestamp}'
+      values:
+#        eventInBS: '{.eventInBS}' # dynamic value
+#        eventInBSCampaign: '{.eventInBSCampaign}' # dynamic value
+        activationTime: '{.activationTime}'     # static value
+
+    - name: blueshift_metrics
+      type: object
+      help: Blueshift activationTime by messageID
+      path: '{.data.actor.account.nrql.results[*]}'
+      labels:
+        #        timestamp: '{.timestamp}'
+        message_id: '{.messageId}'
+        activationTime: '{.activationTime}'     # static value
+        timestamp: '{.timestamp}'
+      values:
+        eventInBS: '{.eventInBS}' # dynamic value
+        eventInBSCampaign: '{.eventInBSCampaign}' # dynamic value
+    headers:
+      X-Dummy: my-test-header

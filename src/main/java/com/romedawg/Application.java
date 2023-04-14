@@ -1,12 +1,11 @@
 package com.romedawg;
 
 import com.twilio.Twilio;
-import com.twilio.rest.api.v2010.account.Message;
-import com.twilio.type.PhoneNumber;
-import org.springframework.beans.factory.annotation.Value;
+import io.micrometer.core.aop.TimedAspect;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.servlet.ServletContext;
@@ -20,6 +19,11 @@ public class Application {
 
         SpringApplication.run(Application.class, args);
 
+    }
+
+    @Bean
+    public TimedAspect timedAspect(MeterRegistry meterRegistry){
+        return new TimedAspect(meterRegistry);
     }
 
 }

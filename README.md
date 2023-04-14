@@ -50,7 +50,19 @@ docker run -e POSTGRES_HOST="172.17.0.1" -e POSTGRES_DATABASE="romedawg" -e POST
 # PASS IN AN ENV FILE WITH THE CREDS BELOW
 docker run -e POSTGRES_HOST="172.17.0.1" --env-file mycredentials.txt -p 8080:8080 romedawg
 
-./gradlew build; docker build -t romedawg .;docker build -t romedawg .; docker run -e POSTGRES_HOST="172.17.0.1" --env-file mycredentials.txt -p 8080:8080 --name romedawg romedawg
+# Running via docker
+./gradlew build; docker build -t romedawg .; docker run -e POSTGRES_HOST="172.17.0.1" --env-file mycredentials.txt -p 8080:8080 --name romedawg romedawg
+
+
+# Running via Jar
+java -jar -Dspring.profiles.active=dev \
+-Dcom.sun.management.jmxremote \
+-Dcom.sun.management.jmxremote.port=9010 \
+-Dcom.sun.management.jmxremote.rmi.port=9010 \
+-Dcom.sun.management.jmxremote.local.only=false \
+-Dcom.sun.management.jmxremote.authenticate=false \
+-Dcom.sun.management.jmxremote.ssl=false \
+./build/libs/romedawg.jar
 ```
 
 # what components are needed?

@@ -2,6 +2,7 @@ package com.romedawg.controller;
 
 import com.romedawg.domain.Metra.customSchedules.HinsdaleSchedule;
 import com.romedawg.repository.Metra.customSchedules.HinsdaleRepository;
+import io.micrometer.core.annotation.Timed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class MetraController {
         return "pages/metra";
     }
 
+    @Timed(value="metra.chicagoTime", description = "time taken to return metra to chicago query")
     @GetMapping("/metraToChicago")
     public String metraToChicago(Model model)  {
 

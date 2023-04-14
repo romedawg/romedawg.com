@@ -2,6 +2,11 @@
 .gradle
 !gradle/wrapper/gradle-wrapper.jar
 mycredentials.txt
+tests/romedawg_secrets.txt
+*romedawg_secrets.txt
+.env
+tests/.env
 build/libs/romedawg.jar
 ./build
 build/
+application-local.properties

@@ -1,0 +1,46 @@
+version: '3.7'
+networks:
+  gohealth:
+    driver: bridge
+services:
+  romedawg:
+    image: romedawg
+    hostname: romedawg
+    domainname: gohealth.com
+    user: root
+    networks:
+      gohealth:
+        aliases:
+          - romedawg
+          - romedawg.gohealth.com
+    ports:
+      - 8080:8080
+  postgres:
+    image: postgres
+    hostname: postgres
+    domainname: gohealth.com
+    environment:
+      - POSTGRES_DATABASE=romedawg
+      - ADMIN_USER=roman
+      - ADMIN_PASSWORD=password
+    networks:
+      gohealth:
+        aliases:
+          - postgres
+          - postgres.gohealth.com
+    ports:
+      - 5432:5432
+  prometheus:
+    image: gohealth/prometheus-2
+    hostname: prometheus
+    domainname: gohealth.com
+    networks:
+      gohealth:
+        aliases:
+          - prometheus
+          - prometheus.gohealth.com
+    volumes:
+      - ./json_exporter:/opt/examples
+      - ./json_exporter/prometheus.yml:/opt/prometheus/etc/prometheus.yml
+    ports:
+      - 9090:9090

@@ -152,3 +152,9 @@ https://gbfs.divvybikes.com/gbfs/gbfs.json
       ]
     }
 ```
+
+# Monitoring
+Acuator/Micrometer are setup and expose prometheus metrics
+
+ - You can use `docker-compose /tests/romedawg.test.yml up` to test locally
+   - http://localhost:9090/ - prometheus instance

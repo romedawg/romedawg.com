@@ -1,0 +1,16 @@
+2023-04-18T13:25:08,104-0500 [17774 1] com.newrelic INFO: Writing to New Relic log file: /Users/romanrafacz/workspace/romans_projects/romedawg/newrelic/logs/newrelic_agent.log
+2023-04-18T13:25:08,105-0500 [17774 1] com.newrelic INFO: JRE vendor Amazon.com Inc. version 11.0.15
+2023-04-18T13:25:08,105-0500 [17774 1] com.newrelic INFO: JVM vendor Amazon.com Inc. OpenJDK 64-Bit Server VM version 11.0.15+9-LTS
+2023-04-18T13:25:08,105-0500 [17774 1] com.newrelic INFO: OS Mac OS X version 13.3.1 arch x86_64
+2023-04-18T13:25:08,105-0500 [17774 1] com.newrelic INFO: Agent Host: GO-C02G23C8MD6R IP: 10.0.0.78
+2023-04-18T13:25:08,105-0500 [17774 1] com.newrelic INFO: New Relic Agent v8.1.0 is initializing...
+2023-04-18T13:25:08,745-0500 [17774 29] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2023-04-18T13:25:09,733-0500 [17774 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2023-04-18T13:25:10,072-0500 [17774 1] com.newrelic INFO: Setting audit_mode to false
+2023-04-18T13:25:10,206-0500 [17774 1] com.newrelic.agent.config.ConfigServiceImpl INFO: Configuration file is /Users/romanrafacz/workspace/romans_projects/romedawg/newrelic/./newrelic.yml
+2023-04-18T13:25:10,206-0500 [17774 1] com.newrelic.agent.config.ConfigServiceImpl INFO: Distributed tracing is replacing cross application tracing as the default means of tracing between services. To continue using cross application tracing, enable it with cross_application_tracer.enabled=true and distributed_tracing.enabled=false. 
+2023-04-18T13:25:10,211-0500 [17774 1] com.newrelic INFO: New Relic Agent v8.1.0 has started
+2023-04-18T13:25:10,212-0500 [17774 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@e25b2fe
+2023-04-18T13:25:10,212-0500 [17774 1] com.newrelic INFO: Premain startup complete in 2,651ms
+2023-04-18T13:25:10,705-0500 [17774 22] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
+2023-04-18T13:25:10,707-0500 [17774 22] com.newrelic.agent.core.CoreServiceImpl INFO: New Relic Agent has shutdown

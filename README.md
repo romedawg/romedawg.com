@@ -54,7 +54,7 @@ docker run -e POSTGRES_HOST="172.17.0.1" --env-file mycredentials.txt -p 8080:80
 ./gradlew build; docker build -t romedawg .; docker run -e POSTGRES_HOST="172.17.0.1" --env-file mycredentials.txt -p 8080:8080 --name romedawg romedawg
 
 
-# Running via Jar
+# Running via Jar, enabling JMX
 java -jar -Dspring.profiles.active=dev \
 -Dcom.sun.management.jmxremote \
 -Dcom.sun.management.jmxremote.port=9010 \
@@ -63,6 +63,9 @@ java -jar -Dspring.profiles.active=dev \
 -Dcom.sun.management.jmxremote.authenticate=false \
 -Dcom.sun.management.jmxremote.ssl=false \
 ./build/libs/romedawg.jar
+
+# New Relic Monitoring
+java -javaagent:./newrelic/newrelic.jar -jar ./build/libs/romedawg.jar
 ```
 
 # what components are needed?

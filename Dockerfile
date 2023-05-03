@@ -6,20 +6,14 @@ LABEL version="0.1"
 LABEL description="This is custom Docker Image for romedawg.com"
 
 COPY /build/libs/romedawg.jar /opt/romedawg.jar
+COPY /newrelic /opt/newrelic
 WORKDIR /opt/
 
-# Tjos wprls
+# Basic
 #CMD ["java", "-jar", "-Dspring.profiles.active=dev", "/opt/romedawg.jar"]
 
-CMD ["java", "-Xms4096M", "-Xmx6000M","-Dcom.sun.management.jmxremote","-Dcom.sun.management.jmxremote.port=9010", "-Dcom.sun.management.jmxremote.local.only=false","-Dcom.sun.management.jmxremote.authenticate=false","-Dcom.sun.management.jmxremote.ssl=false","-jar", "-Dspring.profiles.active=dev", "/opt/romedawg.jar"]
-#     "-Dcom.sun.management.jmxremote",
-#     "-Dcom.sun.management.jmxremote.port=9010",
-#     "-Dcom.sun.management.jmxremote.local.only=false",
-#     "-Dcom.sun.management.jmxremote.authenticate=false",
-#     "-Dcom.sun.management.jmxremote.ssl=false ",
-#     "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE}",
-#     "-jar",
-#     "/opt/romedawg.jar"]
+# Configuring New Relic Agent
+CMD ["java", "-javaagent:/opt/newrelic/newrelic.jar", "-Xms4096M", "-Xmx6000M","-Dcom.sun.management.jmxremote","-Dcom.sun.management.jmxremote.port=9010", "-Dcom.sun.management.jmxremote.local.only=false","-Dcom.sun.management.jmxremote.authenticate=false","-Dcom.sun.management.jmxremote.ssl=false","-jar", "-Dspring.profiles.active=dev", "/opt/romedawg.jar"]
 
 # Testing jmx_agent exporter
 #CMD ["java", "-javaagent:/Users/romanrafacz/Downloads/jmx_exporter/jmx_prometheus_javaagent_java6/target/jmx_prometheus_javaagent_java6-0.18.1-SNAPSHOT.jar=12345:/tmp/config.yaml", "-jar", "-Dspring.profiles.active=dev", "/opt/romedawg.jar"]

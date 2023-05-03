@@ -20,6 +20,6 @@ public class IndexContoller {
     @Timed()
     @RequestMapping("/prometheusTesting")
     public String prometheusTesting(){
-        return "pages/promethesTesting";
+        return "pages/promethes";
     }
 }

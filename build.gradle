@@ -26,6 +26,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+    // Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    //  Temporary explicit version to fix Thymeleaf bug
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.1.RELEASE'
+    implementation 'org.springframework.security:spring-security-test'
+
     // Springboot Actuator - enable monitoring
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation("io.micrometer:micrometer-registry-prometheus")

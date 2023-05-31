@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.util.Collections;
+import java.util.List;
 
 @Controller
 public class todoController {
@@ -26,6 +27,8 @@ public class todoController {
     @GetMapping("/todo")
     public String todo(Model model)  {
         model.addAttribute("todo", new Todo() );
+        List<Todo> todo  = (List<Todo>) todoRepository.findAll();
+        model.addAttribute("tasks", todo);
         return "pages/todo";
     }
 

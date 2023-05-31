@@ -1,10 +1,10 @@
 package com.romedawg.domain.todo;
 
 public enum Category {
-    HOME("Home"),
-    WORK("Work"),
-    KIDS("Kids"),
-    FAMILY("Family");
+    FEATURE("Feature"),
+    SECURITY("Security"),
+    TASK("Improvement"),
+    SUPPORT("Nice to have");
 
     private final String displayValue;
 

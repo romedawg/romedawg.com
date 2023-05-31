@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.test.web.client.RequestMatcher;
+//import org.springframework.test.web.client.RequestMatchers;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -24,8 +24,9 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // @formatter:off
         http
-                .authorizeHttpRequests((authorize) -> authorize
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests((requests) -> requests
+                        .antMatchers( "/home").permitAll()
+                        .antMatchers("/admin").hasRole("USER")
                 )
                 .httpBasic(withDefaults())
                 .formLogin(withDefaults());

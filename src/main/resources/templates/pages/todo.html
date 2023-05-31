@@ -3,6 +3,10 @@
       layout:decorate="~{index.html}">
 <div layout:fragment="content">
 
+    <div>
+        <p>Add TODO items for site improvements</p>
+    </div>
+
     <div id="todo-form2" class="container">
         <form id="form" action="#" method="post" th:action="@{/todo}" th:object="${todo}">
             <div class="form-group">
@@ -24,17 +28,27 @@
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
 
-<!--        <div class="col-md-8">-->
-<!--            <p>-->
-<!--                <tr th:each="task : ${tasks}">-->
-<!--                    <td th:text="${task.taskName}">1</td>-->
-<!--                    <td><a href="#" th:text="${task.TaskDescription}">Title ...</a></td>-->
-<!--                    <td th:text="${task.Active}">Active</td>-->
-<!--                </tr>-->
-<!--            </p>-->
-<!--        </div>-->
+    </div>
 
-
+    <div class="col-md-8">
+        <table class="table table-striped">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Task Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Category</th>
+                <th scope="col">Active</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="task : ${tasks}">
+                <td th:text="${task.TaskName}"></td>
+                <td th:text="${task.TaskDescription}"></td>
+                <td th:text="${task.Category}"></td>
+                <td th:text="${task.Active}"></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 

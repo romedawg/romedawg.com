@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html layout:decorator="index" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{index.html}">
+<div layout:fragment="content">
+
+    <div id="profile-logo" class="container">
+        This is the admin page
+
+        <p class="content" th:utext="${test}"></p>
+
+    </div>
+</div>
+
+</html>

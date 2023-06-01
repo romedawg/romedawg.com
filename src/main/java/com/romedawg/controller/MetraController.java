@@ -51,4 +51,11 @@ public class MetraController {
         model.addAttribute("stops", hinsdaleSchedule);
         return "pages/metra";
     }
+
+    //https://metra.com/sites/default/files/schedule-18_5x8_625-5panel_bnsf_summerschedule2019.pdf
+    // opentab to another page
+//    @GetMapping("/metraMap")
+//    public String metraMap(Model model)  {
+//
+//    }
 }

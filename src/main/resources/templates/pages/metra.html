@@ -5,17 +5,17 @@
 
     <div class="container">
         <div>
-            <h2>Heading to </h2><h2 th:text="${destination}"></h2>
+            <h3 th:text="${'Heading to ' + destination}"></h3>
         </div>
 
         <table class="table table-striped">
             <thead class="thead-dark">
                 <tr>
-                    <th scope="col">Departure Location</th>
+                    <th scope="col">Depart Stop</th>
                     <th scope="col">Departure Time</th>
-                    <th scope="col">Arrival Location</th>
                     <th scope="col">Arrival Time</th>
                     <th scope="col">Travel Minutes</th>
+                    <th scope="col">Arrival</th>
                 </tr>
             </thead>
             <tbody>

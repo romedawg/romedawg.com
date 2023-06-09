@@ -2,14 +2,18 @@
 
 # Java playground for roman
 
+## Personal Goal
+How to ease my commute
+
 ## Problem domain
- For commute, I need to check 3 different sites to validate information 
-otherwise I can miss a train, bus, etc..  or a train is delayed, there's no bike available. 
-I can also take 2 different trains or stop(depending on when i leave or where I'm going) consolidating this info is helpful.
+When commuting any number of scenarios can occur, I am trying to eliminate  friction.
+    - I need to check 3 different sites to validate information(otherwise I can miss a train, bus, etc.. )  
+    - I can also take 2 different trains or stop(depending on when i leave or where I'm going) consolidating this info is helpful.
+    - No alerting(when train is delayed, etc..)
+    - No alerting(if nearby bike is not available)
 
-Notes
-A way to communicate information
-
+My goal is to create automatic alert, texting(when next train is available), etc.. so all i have to do is leave the office and 
+catch a train.
 
 Commute
  - Eliminate Multiple places to look for train/bus times/bike availability.

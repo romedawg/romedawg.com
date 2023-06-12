@@ -1,17 +1,20 @@
 <html xmlns="http://www.w3.org/1999/html">
 <div class="container" th:fragments="nav">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-         <div class="container-fluid">
-            <a class="navbar-brand" href="/">Romedawg</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
-                    </li>
+<!--    <nav class="navbar navbar-dark bg-primary" data-bs-theme="dark">-->
+<!--        <div class="container-fluid">-->
+<!--            <a class="navbar-brand" href="#">Default</a>-->
+<!--        </div>-->
+<!--    </nav>-->
+
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary navbar-dark bg-primary" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">romedawg</a>
+
+            <div class="collapse navbar-collapse" id="navbarScroll">
+                <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+
                     <li class="nav-item">
                         <a class="nav-link" href="/blog">blogspot</a>
                     </li>
@@ -32,9 +35,46 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/divy">divy page</a>
                     </li>
+
                 </ul>
             </div>
-         </div>
-        </nav>
+        </div>
+    </nav>
+
+
+
+<!--        <nav class="navbar navbar-dark bg-primary" data-bs-theme="dark">-->
+<!--         <div class="container">-->
+<!--                <a class="navbar-brand" href="/">Romedawg</a>-->
+
+<!--                <div id="navbarNav" class="collapse navbar-collapse">-->
+<!--                    <ul class="navbar-nav ms-auto">-->
+<!--                        <li class="nav-item active">-->
+<!--                            <a class="nav-link active" href="/">Home<span class="sr-only">(current)</span></a>-->
+<!--                        </li>-->
+<!--                        <li class="nav-item">-->
+<!--                            <a class="nav-link" href="/blog">blogspot</a>-->
+<!--                        </li>-->
+<!--                        <li class="nav-item">-->
+<!--                            <a class="nav-link" href="/todo">todo</a>-->
+<!--                        </li>-->
+<!--                        <li class="nav-item dropdown">-->
+<!--                            <a class="nav-link dropdown-toggle" href=/metra id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="true">-->
+<!--                                Metra-->
+<!--                            </a>-->
+<!--                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">-->
+<!--                                <li><a class="dropdown-item" href="/metramap">MetraMap</a></li>-->
+<!--                                <li><a class="dropdown-item" href="/metraToChicago">HinsdalStops</a></li>-->
+<!--                                <li><a class="dropdown-item" href="/metraFromChicago">ChicagoStops</a></li>-->
+<!--                                <li><a class="dropdown-item" th:href="@{https://schedules.metrarail.com/pdf/alternative/BNSF.pdf}" th:target="_blank">MetraPDF</a></li>-->
+<!--                            </ul>-->
+<!--                        </li>-->
+<!--                        <li class="nav-item">-->
+<!--                            <a class="nav-link" href="/divy">divy page</a>-->
+<!--                        </li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </nav>-->
 </div>
 </html>

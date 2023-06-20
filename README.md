@@ -34,12 +34,27 @@ Notes
 
 # how to deploy?
 Build the jar file
+
+Credentials needed for jar
+```
+export POSTGRES_HOST=postgres
+export POSTGRES_DATABASE=romedawg
+export POSTGRES_USERNAME=roman
+export POSTGRES_PASSWORD=password
+export METRA_API_USERNAME=username
+export METRA_API_PASSWORD=password
+export SLACK_WEBHOOK=https://hooks.slack.com/services/###Webhoook
+export SPRING_PROFILES_ACTIVE=dev
+export HEAP_MEMORY_GB=6000M
+export TWILIO_API_KEY=key
+export TWILIO_API_TOKEN=token
+```
+
 ```
 ./gradlew build
 
 # you can run test the jar localy
 java -jar -Dspring.profiles.active=dev ./build/libs/romedawg.jar
-
 ```
 
 Create the docker container
@@ -54,7 +69,7 @@ docker run -e POSTGRES_HOST="172.17.0.1" -e POSTGRES_DATABASE="romedawg" -e POST
 # PASS IN AN ENV FILE WITH THE CREDS BELOW
 docker run -e POSTGRES_HOST="172.17.0.1" --env-file mycredentials.txt -p 8080:8080 romedawg
 
-# Running via docker
+# Running via docker credentials file
 ./gradlew build; docker build -t romedawg .; docker run -e POSTGRES_HOST="172.17.0.1" --env-file mycredentials.txt -p 8080:8080 --name romedawg romedawg
 
 

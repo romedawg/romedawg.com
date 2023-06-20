@@ -31,7 +31,7 @@ public class HtmlServiceImpl implements HtmlService{
     @Override
     public String markdownDocument(String filename) throws IOException, URISyntaxException {
         Parser parser = Parser.builder().build();
-        log.info("create File object");
+        log.info("mardownDocument: create markdown to HTML object");
 
         // Breaks here
         ClassLoader classLoader = getClass().getClassLoader();

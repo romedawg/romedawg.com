@@ -48,29 +48,14 @@ public class PostController {
 //        return "blog/view";
     }
 
-    @GetMapping("/blog")
-    public ModelAndView viewblog() throws IOException, URISyntaxException {
+    @PostMapping("/viewblog")
+    public ModelAndView viewPostSpecificBlog(@RequestParam("markdown") String markdown) throws IOException, URISyntaxException {
+        log.info("WE ARE HITTING viewblog controller mapping");
+        log.info("Value of markdown object: " + markdown);
         ModelAndView modelAndView = new ModelAndView("blog/view_blog");
-        String htmlContent = htmlService.markdownDocument("homepage");
+        String htmlContent = htmlService.markdownDocument(markdown);
         modelAndView.addObject("htmlContent", htmlContent);
         return modelAndView;
-//        return "blog/view";
     }
 
-//    @PostMapping(value = "/todo")
-//    public String todoPost(@ModelAttribute Todo todo){
-//
-//        log.info("Post todo item");
-//
-//        long currentTime = System.currentTimeMillis();
-//        Date date = new Date(currentTime);
-//        String taskDescription = todo.getTaskDescription();
-//
-//        todo.setDate(date);
-//        todo.setTaskDescription(taskDescription.strip());
-//        todo.setActive(Boolean.TRUE);
-//
-//        todoRepository.save(todo);
-//        return "pages/todo";
-//    }
 }

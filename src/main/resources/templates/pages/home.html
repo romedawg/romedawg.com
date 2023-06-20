@@ -4,9 +4,42 @@
 <div layout:fragment="content">
 
     <div id="profile-logo" class="container">
-        This is the home page
 
-        <p class="content" th:utext="${test}"></p>
+        <p>
+            I wanted to create a blog(something for myself) to document things I wanted to remember over time or could reference.
+            This is a collection of problems, principles, challenges, other things I have come accros and want to keep
+            tabs on.
+        </p>
+
+        <div class="container">
+        <h2>Java</h2>
+            <form action="#" method="post" th:action="@{/viewblog}" th:object="${markdown}" class="inline">
+                <input type="hidden" name="extra_submit_param" th:name="markdown" th:value="springboot_markdown">
+                <button type="submit" name="submit_param" class="btn btn-link">
+                    Springboot+Thymeleaf+Markdown
+                </button>
+            </form>
+        </div>
+
+        <div class="container">
+        <h2>Orchestration</h2>
+            <form action="#" method="post" th:action="@{/viewblog}" th:object="${markdown}" class="inline">
+                <input type="hidden" name="extra_submit_param" th:name="markdown" th:value="ansible_setup">
+                <button type="submit" name="submit_param" class="btn btn-link">
+                    Setting up Ansible
+                </button>
+        </form>
+        </div>
+
+        <div class="container">
+            <h2>Software Engineering</h2>
+            <form action="#" method="post" th:action="@{/viewblog}" th:object="${markdown}" class="inline">
+                <input type="hidden" name="extra_submit_param" th:name="markdown" th:value="queue">
+                <button type="submit" name="submit_param" class="btn btn-link">
+                    Data Structures: Queue
+                </button>
+            </form>
+        </div>
 
     </div>
 </div>

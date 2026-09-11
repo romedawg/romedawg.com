@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Markdown Studio | The Curious Ape Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="editor-body">
+  <!-- Editor Navigation Bar -->
+  <header class="editor-navbar">
+    <div class="editor-nav-left">
+      <a href="index.html" class="brand-logo">
+        <span class="logo-icon">🐵</span>
+        <span class="logo-text">The Curious<strong>Ape</strong></span>
+      </a>
+      <span class="editor-badge">Markdown Studio</span>
+      <div class="draft-indicator" id="draftStatus">
+        <span class="draft-dot"></span>
+        <span id="draftStatusText">Draft auto-saved</span>
+      </div>
+    </div>
+
+    <div class="editor-nav-center">
+      <div class="view-mode-selector">
+        <button class="view-btn active" id="btnViewSplit" title="Split Screen (Editor & Preview)">
+          <span>◫</span> Split
+        </button>
+        <button class="view-btn" id="btnViewEditor" title="Editor Only">
+          <span>📝</span> Write
+        </button>
+        <button class="view-btn" id="btnViewPreview" title="Preview Only">
+          <span>👁️</span> Preview
+        </button>
+      </div>
+    </div>
+
+    <div class="editor-nav-right">
+      <div class="dropdown-wrap">
+        <button class="btn btn-secondary btn-sm" id="btnTemplates">
+          <span>📋 Templates</span>
+          <span class="caret">▾</span>
+        </button>
+        <div class="dropdown-menu hidden" id="templatesMenu">
+          <div class="dropdown-item" data-template="tech-runbook">
+            <strong>🛠️ Technical Runbook / Migration</strong>
+            <small>Pre-structured with architecture, endpoints, TLS, checklists, & queries</small>
+          </div>
+          <div class="dropdown-item" data-template="deep-dive">
+            <strong>🔬 Engineering Deep Dive</strong>
+            <small>Architecture, code samples, performance benchmarks, and tradeoffs</small>
+          </div>
+          <div class="dropdown-item" data-template="standard-post">
+            <strong>📖 Standard Story / Essay</strong>
+            <small>Introductory hook, key principles, and thoughtful conclusions</small>
+          </div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item text-danger" data-template="clear">
+            <strong>🗑️ Clear Editor (Blank Slate)</strong>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-secondary btn-sm" id="btnImportMd" title="Import a local .md file">
+        <span>📂 Import .md</span>
+      </button>
+      <input type="file" id="mdFileInput" accept=".md,.txt,.markdown" style="display: none;" />
+
+      <button class="btn btn-secondary btn-sm" id="btnExportMd" title="Download as .md file">
+        <span>💾 Export .md</span>
+      </button>
+
+      <a href="index.html" class="btn btn-secondary btn-sm">Cancel</a>
+      
+      <button class="btn btn-primary btn-sm" id="btnPublish">
+        <span>Publish Story 🚀</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Metadata Bar (Title, Author, Category, Tags) -->
+  <section class="editor-metadata-bar">
+    <div class="metadata-row-main">
+      <input type="text" id="postTitleInput" class="editor-title-input" placeholder="Enter an engaging story title..." required autocomplete="off" />
+    </div>
+    
+    <div class="metadata-row-details">
+      <div class="meta-field">
+        <label for="postAuthorInput">Author</label>
+        <input type="text" id="postAuthorInput" value="Roman Rafacz" placeholder="Author name" />
+      </div>
+
+      <div class="meta-field">
+        <label for="postAuthorRoleInput">Author Role</label>
+        <input type="text" id="postAuthorRoleInput" value="Staff SRE & Infrastructure" placeholder="e.g. SRE / Engineer" />
+      </div>
+
+      <div class="meta-field">
+        <label for="postCategorySelect">Category</label>
+        <select id="postCategorySelect">
+          <option value="Articles" selected>Articles</option>
+          <option value="Recipes">Recipes</option>
+          <option value="Swim">Swim</option>
+          <option value="Snowboarding">Snowboarding</option>
+          <option value="Philosophy">Philosophy</option>
+          <option value="General">General</option>
+        </select>
+      </div>
+
+      <div class="meta-field flex-2">
+        <label for="postTagsInput">Tags (comma-separated)</label>
+        <input type="text" id="postTagsInput" value="Cloud, Architecture, SRE" placeholder="e.g. Couchbase, AWS, Kubernetes" />
+      </div>
+
+      <div class="meta-field flex-3">
+        <label for="postSummaryInput">Short Excerpt / Teaser</label>
+        <input type="text" id="postSummaryInput" placeholder="1-2 sentences summarizing your story for card feeds" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Markdown Formatting Toolbar -->
+  <section class="editor-toolbar">
+    <div class="toolbar-group">
+      <button type="button" class="tool-btn" data-action="h1" title="Heading 1 (#)">H1</button>
+      <button type="button" class="tool-btn" data-action="h2" title="Heading 2 (##)">H2</button>
+      <button type="button" class="tool-btn" data-action="h3" title="Heading 3 (###)">H3</button>
+    </div>
+
+    <div class="toolbar-divider"></div>
+
+    <div class="toolbar-group">
+      <button type="button" class="tool-btn" data-action="bold" title="Bold (**text**)"><strong>B</strong></button>
+      <button type="button" class="tool-btn" data-action="italic" title="Italic (*text*)"><em>I</em></button>
+      <button type="button" class="tool-btn" data-action="strikethrough" title="Strikethrough (~~text~~)"><s>S</s></button>
+    </div>
+
+    <div class="toolbar-divider"></div>
+
+    <div class="toolbar-group">
+      <button type="button" class="tool-btn" data-action="code-inline" title="Inline Code (`code`)">&lt;/&gt;</button>
+      <button type="button" class="tool-btn" data-action="code-block" title="Fenced Code Block (```lang)">{ }</button>
+      <button type="button" class="tool-btn" data-action="quote" title="Blockquote (&gt; text)">❞</button>
+      <button type="button" class="tool-btn" data-action="table" title="Insert Table">▦ Table</button>
+    </div>
+
+    <div class="toolbar-divider"></div>
+
+    <div class="toolbar-group">
+      <button type="button" class="tool-btn" data-action="ul" title="Bullet List (- )">• List</button>
+      <button type="button" class="tool-btn" data-action="ol" title="Numbered List (1. )">1. List</button>
+      <button type="button" class="tool-btn" data-action="checklist" title="Checklist item (- [ ])">☑ Task</button>
+      <button type="button" class="tool-btn" data-action="hr" title="Horizontal Line (---)">― Rule</button>
+    </div>
+
+    <div class="toolbar-divider"></div>
+
+    <div class="toolbar-group">
+      <button type="button" class="tool-btn" data-action="link" title="Insert Link [text](url)">🔗 Link</button>
+      <button type="button" class="tool-btn" data-action="image" title="Insert Image ![alt](url)">🖼️ Image</button>
+    </div>
+
+    <div class="toolbar-right">
+      <button type="button" class="tool-btn text-muted" id="btnHelp" title="Markdown Guide & Shortcuts">
+        <span>❓ Shortcuts</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Split Screen Workspace -->
+  <main class="editor-workspace split-mode" id="workspace">
+    <!-- Left Pane: Editor -->
+    <div class="pane pane-editor" id="paneEditor">
+      <div class="pane-header">
+        <span class="pane-label">MARKDOWN SOURCE</span>
+        <span class="pane-hint">Tab indents • Ctrl+B bold • Ctrl+I italic</span>
+      </div>
+      <div class="editor-textarea-wrap">
+        <textarea id="markdownSource" class="markdown-textarea" placeholder="# Start writing your story here...
+Use the toolbar above or standard markdown formatting:
+
+### 1. Introduction
+Write with full confidence and preview in real-time on the right.
+
+```javascript
+console.log('Hello Curious Ape!');
+```
+
+- [x] Fast live preview
+- [x] Zero formatting friction
+- [x] Auto-saved drafts
+" spellcheck="true"></textarea>
+      </div>
+    </div>
+
+    <!-- Right Pane: Live Rendered Preview -->
+    <div class="pane pane-preview" id="panePreview">
+      <div class="pane-header">
+        <span class="pane-label">LIVE PREVIEW</span>
+        <span class="preview-badge">Instant Render</span>
+      </div>
+      <div class="preview-container">
+        <!-- Rendered Post Detail Article -->
+        <article class="post-preview-card">
+          <div class="post-detail-header">
+            <span class="post-detail-category" id="previewCategory">Engineering</span>
+            <h1 class="post-detail-title" id="previewTitle">Story Title Preview</h1>
+            <div class="post-detail-author-row">
+              <div class="post-detail-author">
+                <div class="post-detail-avatar">🐵</div>
+                <div class="post-detail-author-info">
+                  <span class="post-detail-author-name" id="previewAuthor">Roman Rafacz</span>
+                  <span class="post-detail-meta" id="previewMeta">Staff SRE • Today • <span id="previewReadTime">1 min read</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="post-detail-body" id="previewBody">
+            <!-- Dynamically Rendered Markdown Preview -->
+          </div>
+          <div class="post-detail-tags" id="previewTags">
+            <!-- Tags will appear here -->
+          </div>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Editor Footer Status Bar -->
+  <footer class="editor-footer">
+    <div class="editor-footer-left">
+      <span id="statWords">0 words</span>
+      <span class="stat-sep">•</span>
+      <span id="statChars">0 characters</span>
+      <span class="stat-sep">•</span>
+      <span id="statLines">0 lines</span>
+      <span class="stat-sep">•</span>
+      <span id="statEstRead">1 min read</span>
+    </div>
+    <div class="editor-footer-right">
+      <span>Auto-saved to local browser storage</span>
+      <span class="stat-sep">•</span>
+      <button class="btn-link text-danger" id="btnClearDraft">Reset Draft</button>
+    </div>
+  </footer>
+
+  <!-- Help / Keyboard Shortcuts Modal -->
+  <div class="modal-backdrop hidden" id="helpModalBackdrop">
+    <div class="modal-window create-modal">
+      <div class="modal-header">
+        <h2>⌨️ Markdown Shortcuts & Tips</h2>
+        <button class="modal-close" id="closeHelpModalBtn">&times;</button>
+      </div>
+      <div class="post-detail-body">
+        <table>
+          <thead>
+            <tr><th>Format</th><th>Markdown Syntax</th><th>Shortcut</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Bold</strong></td><td><code>**text**</code></td><td><code>Ctrl / Cmd + B</code></td></tr>
+            <tr><td><em>Italic</em></td><td><code>*text*</code></td><td><code>Ctrl / Cmd + I</code></td></tr>
+            <tr><td><code>Code</code></td><td><code>`code`</code></td><td><code>Ctrl / Cmd + E</code></td></tr>
+            <tr><td><strong>Code Block</strong></td><td><code>```lang ... ```</code></td><td><code>Ctrl / Cmd + Shift + C</code></td></tr>
+            <tr><td><strong>Link</strong></td><td><code>[Title](URL)</code></td><td><code>Ctrl / Cmd + K</code></td></tr>
+            <tr><td><strong>Indentation</strong></td><td>Indent 2 spaces</td><td><code>Tab</code> / <code>Shift+Tab</code></td></tr>
+            <tr><td><strong>Headers</strong></td><td><code>#</code>, <code>##</code>, <code>###</code></td><td>Toolbar</td></tr>
+            <tr><td><strong>Checklists</strong></td><td><code>- [x] Task</code> or <code>- [ ] Task</code></td><td>Toolbar</td></tr>
+            <tr><td><strong>Table</strong></td><td><code>| Col 1 | Col 2 |</code></td><td>Toolbar</td></tr>
+            <tr><td><strong>Callout</strong></td><td><code>&gt; Quote or note</code></td><td>Toolbar</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast hidden" id="toast">
+    <span class="toast-icon">✨</span>
+    <span class="toast-message" id="toastMessage">Story published successfully!</span>
+  </div>
+
+  <script src="editor.js"></script>
+</body>
+</html>

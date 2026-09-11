@@ -6,6 +6,7 @@ let currentArticleId = null;
 let activeHeadingId = null;
 
 // DOM Elements - Main Layout
+const siteLayout = document.getElementById('siteLayout');
 const feedView = document.getElementById('feedView');
 const aboutView = document.getElementById('aboutView');
 const articleReaderView = document.getElementById('articleReaderView');
@@ -198,6 +199,7 @@ function setCategory(category, updateHash = true) {
   feedView.classList.remove('hidden');
   aboutView.classList.add('hidden');
   articleReaderView.classList.add('hidden');
+  if (siteLayout) siteLayout.classList.add('is-home');
 
   // Update titles & descriptions
   const descriptions = {
@@ -360,6 +362,7 @@ function openArticle(id, updateHash = true) {
   feedView.classList.add('hidden');
   aboutView.classList.add('hidden');
   articleReaderView.classList.remove('hidden');
+  if (siteLayout) siteLayout.classList.remove('is-home');
 
   // Populate Header & Metadata
   articleTitle.textContent = post.title;

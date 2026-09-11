@@ -1,93 +1,219 @@
-# romedawg.com
+# 🐵 The Curious Ape (romedawg.com)
 
+> Welcome! This is my personal corner of the web where I keep track of technologies, test out new things, document engineering runbooks, experiment with modern architectures, and explore passions across tech, cooking, and the outdoors.
 
+Whether it's diving into distributed microservices and database migrations, dialing in the perfect single-origin pour-over coffee, perfecting cold-water swimming sighting techniques, or tuning splitboard gear for backcountry powder—this site serves as a live laboratory, notebook, and blog.
 
-## Getting started
+---
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## 🌟 Features
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- **Clean 3-Column Layout**: Inspired by [some-natalie.dev](https://some-natalie.dev/container-escapes-ptrace/), featuring a sticky left navigation bar, center content stream, and a right sidebar with *Recently Updated* posts and topic pills.
+- **Interactive Section Navigator**: Inspired by [greennode.ai](https://greennode.ai/tutorial/argocd-multi-cluster-hub-spoke-self-service), articles feature a sticky left **"ON THIS PAGE"** Table of Contents with automatic heading extraction (`<h2>`/`<h3>`), smooth click-to-scroll, and real-time **ScrollSpy**.
+- **Ergonomic Markdown Studio (`/editor.html`)**:
+  - Live split-view editing with instant markdown rendering.
+  - SRE runbook, engineering deep-dive, and essay starter templates.
+  - Automatic `localStorage` draft backup to prevent data loss.
+  - Local `.md` file import and export.
+  - One-click publishing to the Spring Boot backend.
+- **Categorized Content**: Dedicated feeds for **Articles**, **Recipes**, **Swim**, **Snowboarding**, and **About**.
+- **RESTful Backend**: High-performance Java 21 & Spring Boot 3 API with JSON-backed persistence.
 
-## Add your files
+---
 
-* [Create](https://docs.gitlab.com/user/project/repository/web_editor/#create-a-file) or [upload](https://docs.gitlab.com/user/project/repository/web_editor/#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+## 🛠️ Tech Stack
 
+- **Backend**: Java 21, Spring Boot 3.3.4, Spring Web, Jackson JSON
+- **Build Tool**: Gradle 8.x (with `./gradlew` wrapper)
+- **Frontend**: Vanilla HTML5, Modern CSS3 (Grid/Flexbox, CSS variables), ES6+ JavaScript, [Marked.js](https://marked.js.org/) for Markdown parsing
+- **Data Storage**: JSON-based file store (`src/main/resources/data/posts.json`)
+
+---
+
+## 📋 Prerequisites
+
+- **Java Development Kit (JDK)**: Java 21 or newer installed (`java -version`)
+- **Git**
+
+---
+
+## 🚀 How to Build, Run & Deploy
+
+### 1. Local Development (Instant Run)
+
+To run the application locally using Gradle:
+
+```bash
+# Clone the repository
+git clone https://gitlab.com/romedawg-group/romedawg.com.git
+cd blog-site
+
+# Run via Gradle bootRun
+./gradlew bootRun
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/romedawg-group/romedawg.com.git
-git branch -M main
-git push -uf origin main
+
+Once started, open your browser and navigate to:
+- **Homepage**: [http://localhost:8080](http://localhost:8080)
+- **Markdown Studio**: [http://localhost:8080/editor.html](http://localhost:8080/editor.html)
+
+---
+
+### 2. Building the Production JAR
+
+To compile and package a standalone executable JAR:
+
+```bash
+# Build the project and run tests
+./gradlew clean build
+
+# The output executable JAR is generated at:
+# build/libs/blog-site-1.0.0.jar
 ```
 
-## Integrate with your tools
+---
 
-* [Set up project integrations](https://gitlab.com/romedawg-group/romedawg.com/-/settings/integrations)
+### 3. Running the Standalone JAR
 
-## Collaborate with your team
+Execute the built JAR directly with Java:
 
-* [Invite team members and collaborators](https://docs.gitlab.com/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/user/project/merge_requests/creating_merge_requests/)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/user/project/issues/managing_issues/#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+```bash
+java -jar build/libs/blog-site-1.0.0.jar
+```
 
-## Test and Deploy
+#### Custom Port Configuration
+By default, the server runs on port `8080`. To override the port:
 
-Use the built-in continuous integration in GitLab.
+```bash
+# Using an environment variable
+SERVER_PORT=9090 java -jar build/libs/blog-site-1.0.0.jar
 
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/topics/autodevops/requirements/)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ci/environments/protected_environments/)
+# Or using a JVM system property
+java -Dserver.port=9090 -jar build/libs/blog-site-1.0.0.jar
+```
 
-***
+---
 
-# Editing this README
+### 4. Deploying as a Background Service
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+#### Option A: Running with `nohup` (Simple Server Deployment)
+```bash
+nohup java -jar build/libs/blog-site-1.0.0.jar > app.log 2>&1 &
+echo $! > app.pid
+```
+To stop the server:
+```bash
+kill $(cat app.pid)
+```
 
-## Suggestions for a good README
+#### Option B: Systemd Service (Linux / EC2 / VM)
+Create `/etc/systemd/system/blog-site.service`:
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+```ini
+[Unit]
+Description=The Curious Ape Blog Service
+After=network.target
 
-## Name
-Choose a self-explaining name for your project.
+[Service]
+User=ubuntu
+WorkingDirectory=/opt/blog-site
+ExecStart=/usr/bin/java -jar /opt/blog-site/build/libs/blog-site-1.0.0.jar
+SuccessExitStatus=143
+Restart=always
+RestartSec=10
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+[Install]
+WantedBy=multi-user.target
+```
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+Enable and start:
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable blog-site
+sudo systemctl start blog-site
+```
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+#### Option C: Container Deployment (Docker)
+Create a `Dockerfile`:
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+```dockerfile
+# Build Stage
+FROM gradle:8.10-jdk21 AS build
+WORKDIR /app
+COPY . .
+RUN ./gradlew build --no-daemon -x test
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+# Run Stage
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=build /app/build/libs/blog-site-1.0.0.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
+```
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+Build and run:
+```bash
+docker build -t blog-site:latest .
+docker run -d -p 8080:8080 --name blog-site blog-site:latest
+```
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+---
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+## 📁 Project Structure
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+```text
+blog-site/
+├── build.gradle                              # Gradle build configuration
+├── settings.gradle                           # Project settings
+├── gradlew / gradlew.bat                     # Gradle wrapper scripts
+├── src/
+│   ├── main/
+│   │   ├── java/com/curiousape/blog/
+│   │   │   ├── BlogApplication.java          # Spring Boot main entrypoint
+│   │   │   ├── controller/
+│   │   │   │   └── PostController.java       # REST API endpoints (/api/posts)
+│   │   │   ├── model/
+│   │   │   │   └── Post.java                 # Post data model
+│   │   │   └── service/
+│   │   │       └── PostService.java          # Business logic & JSON file persistence
+│   │   └── resources/
+│   │       ├── application.properties        # Application configuration
+│   │       ├── data/
+│   │       │   └── posts.json                # Seed / saved blog posts
+│   │       └── static/
+│   │           ├── index.html                # 3-column main blog layout
+│   │           ├── styles.css                # Site & article reader styles
+│   │           ├── app.js                    # Client-side router, TOC ScrollSpy & API client
+│   │           ├── editor.html               # Markdown Studio editor
+│   │           ├── editor.css                # Split-screen editor styling
+│   │           ├── editor.js                 # Editor toolbar, shortcuts, templates, draft store
+│   │           └── images/
+│   │               └── monkey.jpg            # Mascot avatar
+```
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+---
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+## 📡 REST API Endpoints
 
-## License
-For open source projects, say how it is licensed.
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/posts` | List all posts (optional query: `?category=Swim` or `?tag=SRE`) |
+| `GET` | `/api/posts/{id}` | Fetch a single post by ID or slug |
+| `POST` | `/api/posts` | Create a new blog post |
+| `POST` | `/api/posts/{id}/like` | Increment like counter for a post |
+| `DELETE` | `/api/posts/{id}` | Delete a post |
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+---
+
+## 📝 Authoring New Posts
+
+1. Navigate to **[http://localhost:8080/editor.html](http://localhost:8080/editor.html)**.
+2. Pick a template from the **📋 Templates** dropdown or start writing Markdown from scratch.
+3. Use the toolbar or shortcuts (`Ctrl+B`, `Ctrl+I`, `Ctrl+K`, etc.).
+4. Add Title, Category (`Articles`, `Recipes`, `Swim`, `Snowboarding`, etc.), and Tags.
+5. Click **"Publish Story 🚀"** to save to the backend.
+
+---
+
+## 📄 License
+
+MIT License. Feel free to explore, fork, and adapt for your own experiments!

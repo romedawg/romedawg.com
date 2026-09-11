@@ -151,7 +151,7 @@ public class EventPublisher {
   },
   'standard-post': {
     title: 'The Art of Simplicity in Modern Software',
-    author: 'Barnaby the Monkey',
+    author: 'Roman',
     role: 'Chief Curiosity Officer',
     category: 'Philosophy',
     tags: 'Simplicity, Craft, Productivity',

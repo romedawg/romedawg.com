@@ -8,6 +8,6 @@ public class BlogApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(BlogApplication.class, args);
-        System.out.println("🐵 The Curious Ape Blog (Spring Boot) is running at http://localhost:8080");
+        System.out.println("🐵 The Curious SRE Blog (Spring Boot) is running at http://localhost:8080");
     }
 }

@@ -14,6 +14,8 @@ spec:
       labels:
         app: romedawg
     spec:
+      imagePullSecrets:
+        - name: gitlab-registry
       containers:
         - name: app
           image: registry.gitlab.com/romedawg/romedawg.com:latest

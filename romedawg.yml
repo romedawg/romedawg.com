@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: 131261850621.dkr.ecr.us-east-2.amazonaws.com/gohealth/romedawg:latest
+          image: registry.gitlab.com/romedawg/romedawg.com:latest
           ports:
             - containerPort: 8080
 ---

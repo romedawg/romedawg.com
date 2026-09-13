@@ -25,7 +25,7 @@ WORKDIR /opt/
 
 RUN set -x \
   && apt-get update -y \
-  && apt-get install -y openjdk-17-jdk openjdk-17-jre \
+  && apt-get install -y openjdk-21-jdk openjdk-21-jre \
   && apt-get install -y gettext \
   && rm -rf /var/cache/*
 

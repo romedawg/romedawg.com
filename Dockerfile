@@ -17,7 +17,7 @@ ENV JAVA_JAR_FILE=${JAVA_JAR_DIR}/listomania-${VERSION}.jar
 ENV NEW_RELIC_LABELS=listomania
 
 
-COPY /build/libs/listomania-${VERSION}.jar ${JAVA_JAR_FILE}
+COPY /build/libs/blog-site-1.0.0-${VERSION}.jar ${JAVA_JAR_FILE}
 COPY /newrelic "${NEW_RELIC_HOME}"
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY docker-healthcheck.sh /usr/local/bin/docker-healthcheck.sh

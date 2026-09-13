@@ -1,0 +1,64 @@
+# 1. Application Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: romedawg
+  namespace: romedawg
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: romedawg
+  template:
+    metadata:
+      labels:
+        app: romedawg
+    spec:
+      containers:
+        - name: app
+          image: 131261850621.dkr.ecr.us-east-2.amazonaws.com/gohealth/romedawg:latest
+          ports:
+            - containerPort: 8080
+---
+# 2. Kubernetes Service (Target for Ingress)
+apiVersion: v1
+kind: Service
+metadata:
+  name: romedawg-service
+  namespace: romedawg
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: romedawg
+---
+# 3. AWS Ingress Resource (Triggers ALB & Target Group Provisioning)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: romedawg-ingress
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:131261850621:certificate/979cb3be-a5e2-4d97-9de2-e693e88cee72
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
+spec:
+  ingressClassName: alb
+  rules:
+    - host: romedawg.dev.internal.gohealth.net
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: romedawg-service
+                port:
+                  number: 80

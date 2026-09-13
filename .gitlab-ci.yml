@@ -1,0 +1,32 @@
+stages:
+  - build
+  - package
+
+build_jar:
+  stage: build
+  image: gradle:8.8-jdk21
+  script:
+    - gradle bootJar --no-daemon
+  artifacts:
+    paths:
+      - build/libs/*.jar
+    expire_in: 1 hour
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+build_image:
+  stage: package
+  needs: [build_jar]
+  image:
+    name: gcr.io/kaniko-project/executor:v1.14.0-debug
+    entrypoint: [""]
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}"
+      --destination "${CI_REGISTRY_IMAGE}:latest"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

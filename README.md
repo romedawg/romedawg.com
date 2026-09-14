@@ -1,7 +1,4 @@
-# 🐵 The Curious Ape (romedawg.com)
-=======
 # 🐵 The Curious SRE (romedawg.com)
->>>>>>> e5c91e6 (updates to layout, images and home page)
 
 > Welcome! This is my personal corner of the web where I keep track of technologies, test out new things, document engineering runbooks, experiment with modern architectures, and explore passions across tech, cooking, and the outdoors.
 
@@ -113,11 +110,7 @@ Create `/etc/systemd/system/blog-site.service`:
 
 ```ini
 [Unit]
-<<<<<<< HEAD
-Description=The Curious Ape Blog Service
-=======
 Description=The Curious SRE Blog Service
->>>>>>> e5c91e6 (updates to layout, images and home page)
 After=network.target
 
 [Service]

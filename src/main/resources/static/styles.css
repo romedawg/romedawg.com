@@ -588,8 +588,8 @@ button, input, select, textarea {
 }
 
 .about-avatar {
-  width: 90px;
-  height: 90px;
+  width: 108px;
+  height: 108px;
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid var(--primary-light);

@@ -1304,6 +1304,55 @@ button, input, select, textarea {
 .hidden { display: none !important; }
 
 /* ==========================================================================
+   EDITOR WORKSPACE — VIEW MODES
+   ========================================================================== */
+
+.editor-workspace {
+  display: grid;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.pane {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Split: both panes side by side */
+.editor-workspace.split-mode {
+  grid-template-columns: 1fr 1fr;
+}
+.editor-workspace.split-mode .pane-editor,
+.editor-workspace.split-mode .pane-preview {
+  display: flex;
+}
+
+/* Editor only: hide preview */
+.editor-workspace.editor-mode {
+  grid-template-columns: 1fr;
+}
+.editor-workspace.editor-mode .pane-editor {
+  display: flex;
+}
+.editor-workspace.editor-mode .pane-preview {
+  display: none;
+}
+
+/* Preview only: hide editor */
+.editor-workspace.preview-mode {
+  grid-template-columns: 1fr;
+}
+.editor-workspace.preview-mode .pane-editor {
+  display: none;
+}
+.editor-workspace.preview-mode .pane-preview {
+  display: flex;
+}
+
+/* ==========================================================================
    RESPONSIVE BREAKPOINTS
    ========================================================================== */
 

@@ -1,0 +1,45 @@
+databaseChangeLog:
+- changeSet:
+    id: 1
+    author: rome
+    changes:
+      - createTable:
+          tableName: blog_posts
+          columns:
+            - column:
+                name: id
+                type: int
+                autoIncrement: true
+                constraints:
+                  primaryKey: true
+                  nullable: false
+            - column:
+                name: title
+                type: varchar(255)
+            - column:
+                name: slug
+                type: varchar(255)
+            - column:
+                name: auther
+                type: varchar(50)
+            - column:
+                name: author_role
+                type: varchar(50)
+            - column:
+                name: date
+                type: varchar(255)
+            - column:
+                name: category
+                type: varchar(255)
+            - column:
+                name: summary
+                type: blob
+            - column:
+                name: content
+                type: blob
+            - column:
+                name: likes
+                type: int
+            - column:
+                name: active
+                type: boolean

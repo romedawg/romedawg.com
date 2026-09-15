@@ -2,43 +2,27 @@ package com.curiousape.blog.service;
 
 import com.curiousape.blog.dto.CreatePostRequest;
 import com.curiousape.blog.model.BlogPost;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
-import org.springframework.core.io.ClassPathResource;
+import com.curiousape.blog.model.BlogPostEntity;
+import com.curiousape.blog.repository.BlogPostRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.io.InputStream;
 import java.time.LocalDate;
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class BlogService {
 
-    private final List<BlogPost> posts = new CopyOnWriteArrayList<>();
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final BlogPostRepository repository;
 
-    @PostConstruct
-    public void init() {
-        try {
-            ClassPathResource resource = new ClassPathResource("data/posts.json");
-            if (resource.exists()) {
-                try (InputStream inputStream = resource.getInputStream()) {
-                    List<BlogPost> loaded = objectMapper.readValue(inputStream, new TypeReference<List<BlogPost>>() {});
-                    if (loaded != null) {
-                        posts.addAll(loaded);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("Warning: Could not load initial posts.json: " + e.getMessage());
-        }
+    public BlogService(BlogPostRepository repository) {
+        this.repository = repository;
     }
 
     public List<BlogPost> getPosts(String category, String tag, String search) {
-        return posts.stream()
+        return repository.findAllByOrderByDateDesc().stream()
                 .filter(p -> {
                     if (category != null && !category.isBlank() && !category.equalsIgnoreCase("all")) {
                         if (p.getCategory() == null || !p.getCategory().equalsIgnoreCase(category)) {
@@ -60,85 +44,88 @@ public class BlogService {
                     }
                     return true;
                 })
-                .sorted((a, b) -> {
-                    String dateA = a.getDate() != null ? a.getDate() : "";
-                    String dateB = b.getDate() != null ? b.getDate() : "";
-                    return dateB.compareTo(dateA);
-                })
+                .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     public Optional<BlogPost> getPostById(String idOrSlug) {
         if (idOrSlug == null) return Optional.empty();
-        return posts.stream()
-                .filter(p -> idOrSlug.equals(p.getId()) || idOrSlug.equalsIgnoreCase(p.getSlug()))
-                .findFirst();
+        try {
+            long id = Long.parseLong(idOrSlug);
+            Optional<BlogPostEntity> byId = repository.findById(id);
+            if (byId.isPresent()) return byId.map(this::toDto);
+        } catch (NumberFormatException ignored) {}
+        return repository.findBySlug(idOrSlug).map(this::toDto);
     }
 
-    public synchronized BlogPost createPost(CreatePostRequest request) {
-        int maxId = posts.stream()
-                .mapToInt(p -> {
-                    try {
-                        return Integer.parseInt(p.getId());
-                    } catch (Exception e) {
-                        return 0;
-                    }
-                })
-                .max()
-                .orElse(0);
-
-        String id = String.valueOf(maxId + 1);
+    @Transactional
+    public BlogPost createPost(CreatePostRequest request) {
         String rawTitle = request.getTitle() != null ? request.getTitle().trim() : "Untitled";
-        String slug = rawTitle.toLowerCase().replaceAll("[^a-z0-9]+", "-").replaceAll("^-|-$", "") + "-" + id;
-        String dateStr = LocalDate.now().toString();
-
-        List<String> tags = request.getTags();
-        if (tags == null || tags.isEmpty()) {
-            tags = List.of("General");
-        }
-
         String content = request.getContent() != null ? request.getContent() : "";
         String summary = request.getSummary();
         if (summary == null || summary.isBlank()) {
             summary = content.length() > 140 ? content.substring(0, 137) + "..." : content;
         }
 
-        BlogPost post = new BlogPost(
-                id,
-                rawTitle,
-                slug,
-                request.getAuthor() != null && !request.getAuthor().isBlank() ? request.getAuthor() : "Barnaby the Monkey",
-                request.getAuthorRole() != null && !request.getAuthorRole().isBlank() ? request.getAuthorRole() : "Tree Climber & Dev",
-                dateStr,
-                calculateReadTime(content),
-                request.getCategory() != null && !request.getCategory().isBlank() ? request.getCategory() : "General",
-                tags,
-                summary,
-                content,
-                0,
-                false
-        );
+        List<String> tags = request.getTags();
+        if (tags == null || tags.isEmpty()) {
+            tags = List.of("General");
+        }
 
-        posts.add(0, post);
-        return post;
+        String baseSlug = rawTitle.toLowerCase().replaceAll("[^a-z0-9]+", "-").replaceAll("^-|-$", "");
+
+        BlogPostEntity entity = new BlogPostEntity();
+        entity.setTitle(rawTitle);
+        entity.setSlug(baseSlug + "-" + System.currentTimeMillis()); // temporary slug satisfies NOT NULL
+        entity.setAuthor(request.getAuthor() != null && !request.getAuthor().isBlank() ? request.getAuthor() : "Roman");
+        entity.setAuthorRole(request.getAuthorRole() != null && !request.getAuthorRole().isBlank() ? request.getAuthorRole() : "Contributor");
+        entity.setDate(LocalDate.now());
+        entity.setReadTime(calculateReadTime(content));
+        entity.setCategory(request.getCategory() != null && !request.getCategory().isBlank() ? request.getCategory() : "General");
+        entity.setTags(tags);
+        entity.setSummary(summary);
+        entity.setContent(content);
+        entity.setLikes(0);
+        entity.setFeatured(false);
+
+        BlogPostEntity saved = repository.save(entity);
+        saved.setSlug(baseSlug + "-" + saved.getId());
+        return toDto(repository.save(saved));
     }
 
-    public synchronized Optional<Integer> likePost(String idOrSlug) {
-        Optional<BlogPost> optionalPost = getPostById(idOrSlug);
-        if (optionalPost.isPresent()) {
-            BlogPost post = optionalPost.get();
-            post.setLikes(post.getLikes() + 1);
-            return Optional.of(post.getLikes());
-        }
-        return Optional.empty();
+    @Transactional
+    public Optional<Integer> likePost(String idOrSlug) {
+        Optional<BlogPost> dto = getPostById(idOrSlug);
+        if (dto.isEmpty()) return Optional.empty();
+
+        long entityId = Long.parseLong(dto.get().getId());
+        return repository.findById(entityId).map(entity -> {
+            entity.setLikes(entity.getLikes() + 1);
+            return repository.save(entity).getLikes();
+        });
+    }
+
+    private BlogPost toDto(BlogPostEntity e) {
+        return new BlogPost(
+                String.valueOf(e.getId()),
+                e.getTitle(),
+                e.getSlug(),
+                e.getAuthor(),
+                e.getAuthorRole(),
+                e.getDate() != null ? e.getDate().toString() : null,
+                e.getReadTime(),
+                e.getCategory(),
+                e.getTags(),
+                e.getSummary(),
+                e.getContent(),
+                e.getLikes(),
+                e.isFeatured()
+        );
     }
 
     private String calculateReadTime(String content) {
-        if (content == null || content.isBlank()) {
-            return "1 min read";
-        }
-        int wordCount = content.trim().split("\\s+").length;
-        int minutes = Math.max(1, (int) Math.ceil(wordCount / 180.0));
-        return minutes + " min read";
+        if (content == null || content.isBlank()) return "1 min read";
+        int words = content.trim().split("\\s+").length;
+        return Math.max(1, (int) Math.ceil(words / 180.0)) + " min read";
     }
 }

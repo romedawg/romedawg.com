@@ -1,11 +1,72 @@
-# 1. Application Deployment
+# -------------------------------------------------------------------
+# 1. Namespace & ServiceAccount (Bound to a restricted backend IAM Role)
+# -------------------------------------------------------------------
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: romedawg
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: romedawg
+  namespace: romedawg
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::131261850621:role/romedawg-role-dev
+---
+# -------------------------------------------------------------------
+# 2. Namespaced SecretStore (Connects ESO to the Cloud API using the SA)
+# -------------------------------------------------------------------
+apiVersion: external-secrets.io/v1
+kind: SecretStore
+metadata:
+  name: romedawg-ssm-store
+  namespace: listomania
+spec:
+  provider:
+    aws:
+      service: ParameterStore # instead of SecretStore
+      region: us-east-2
+      auth:
+        jwt:
+          serviceAccountRef:
+            name: romedawg
+---
+# -------------------------------------------------------------------
+# 3. ExternalSecret (Fetches the secret and creates a native K8s Secret)
+# -------------------------------------------------------------------
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: romedawg-db-secret
+  namespace: romedawg
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: romedawg-ssm-store
+    kind: SecretStore
+  target:
+    name: romedawg-db-credentials  # The resulting Kubernetes Secret object name
+    creationPolicy: Owner
+  data:
+    - secretKey: POSTGRES_USERNAME         # Key inside the Kubernetes Secret
+      remoteRef:
+        key: /all/dev/romedawg/postgres_username # Path/Key inside AWS Secrets Manager
+    - secretKey: POSTGRES_PASSWORD
+      remoteRef:
+        key: /all/dev/romedawg/postgres_password
+---
+# 4. Application Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: romedawg
   namespace: romedawg
+  annotations:
+    # This annotation links the service account to the IAM role
+    eks.amazonaws.com/role-arn: arn:aws:iam::131261850621:role/romedawg-role
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: romedawg
@@ -16,13 +77,19 @@ spec:
     spec:
       imagePullSecrets:
         - name: gitlab-registry
+      serviceAccountName: romedawg
       containers:
         - name: app
           image: registry.gitlab.com/romedawg/romedawg.com:latest
           ports:
             - containerPort: 8080
+          env:
+            - name: POSTGRES_HOST
+              value: romedawg.cuqo4j764p9h.us-east-2.rds.amazonaws.com
+            - name: POSTGRES_DATABASE
+              value: blog_db
 ---
-# 2. Kubernetes Service (Target for Ingress)
+# 5. Kubernetes Service (Target for Ingress)
 apiVersion: v1
 kind: Service
 metadata:
@@ -37,7 +104,7 @@ spec:
   selector:
     app: romedawg
 ---
-# 3. AWS Ingress Resource (Triggers ALB & Target Group Provisioning)
+# 6. AWS Ingress Resource (Triggers ALB & Target Group Provisioning)
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -51,6 +118,7 @@ metadata:
     alb.ingress.kubernetes.io/ssl-redirect: '443'
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:131261850621:certificate/979cb3be-a5e2-4d97-9de2-e693e88cee72
     alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
+    alb.ingress.kubernetes.io/healthcheck-port: "8080"
 spec:
   ingressClassName: alb
   rules:

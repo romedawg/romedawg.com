@@ -214,6 +214,21 @@ blog-site/
 
 ---
 
+## Postgres permissions
+```
+CREATE DATABASE blog_db;
+\c blog_db 
+
+CREATE USER romedawg WITH PASSWORD 'password';
+
+GRANT CONNECT ON DATABASE romedawg TO romedawg;
+
+GRANT USAGE, CREATE ON SCHEMA public TO romedawg;
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO romedawg;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO romedawg;
+```
+
 ## 📄 License
 
 MIT License. Feel free to explore, fork, and adapt for your own experiments!

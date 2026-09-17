@@ -12,7 +12,7 @@ metadata:
   name: romedawg
   namespace: romedawg
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::131261850621:role/romedawg-role-dev
+    eks.amazonaws.com/role-arn: arn:aws:iam::131261850621:role/romedawg-role
 ---
 # -------------------------------------------------------------------
 # 2. Namespaced SecretStore (Connects ESO to the Cloud API using the SA)

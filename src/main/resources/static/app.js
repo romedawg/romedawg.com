@@ -53,9 +53,25 @@ const toastMessage = document.getElementById('toastMessage');
 
 // Initial Load
 document.addEventListener('DOMContentLoaded', () => {
+  checkAuthStatus();
   setupEventListeners();
   fetchPosts();
 });
+
+async function checkAuthStatus() {
+  try {
+    const resp = await fetch('/api/auth/status');
+    const data = await resp.json();
+    if (data.loggedIn) {
+      document.getElementById('studioNavItem')?.classList.remove('hidden');
+      document.getElementById('studioDivider')?.classList.remove('hidden');
+      document.getElementById('mobileStudioBtn')?.classList.remove('hidden');
+      document.getElementById('logoutForm')?.classList.remove('hidden');
+    }
+  } catch (e) {
+    // not logged in or network error — studio stays hidden
+  }
+}
 
 // Setup Event Listeners
 function setupEventListeners() {

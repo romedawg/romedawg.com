@@ -66,6 +66,17 @@ public class UserController {
         ));
     }
 
+    @PatchMapping("/{username}/active")
+    public ResponseEntity<?> toggleActive(@PathVariable String username) {
+        return userRepository.findByUsername(username)
+                .map(user -> {
+                    user.setActive(!user.isActive());
+                    userRepository.save(user);
+                    return ResponseEntity.ok(Map.of("username", user.getUsername(), "active", user.isActive()));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @DeleteMapping("/{username}")
     public ResponseEntity<?> deleteUser(@PathVariable String username) {
         return userRepository.findByUsername(username)

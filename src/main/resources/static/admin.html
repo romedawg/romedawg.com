@@ -160,6 +160,21 @@
     .role-ADMIN { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
     .role-USER  { background: rgba(16,185,129,0.1);  color: #34d399;  border: 1px solid rgba(16,185,129,0.25); }
 
+    .btn-toggle {
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .btn-toggle.active  { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+    .btn-toggle.active:hover  { background: rgba(16,185,129,0.3); }
+    .btn-toggle.inactive { background: rgba(100,116,139,0.15); color: #64748b; border: 1px solid #334155; }
+    .btn-toggle.inactive:hover { background: rgba(100,116,139,0.3); color: #94a3b8; }
+
     .empty-row td { color: #475569; text-align: center; padding: 1.5rem; }
   </style>
 </head>
@@ -234,7 +249,12 @@
           <tr>
             <td>${escape(u.username)}</td>
             <td><span class="role-badge role-${u.role}">${u.role}</span></td>
-            <td>${u.active ? '✅' : '❌'}</td>
+            <td>
+              <button class="btn-toggle ${u.active ? 'active' : 'inactive'}"
+                      onclick="toggleActive('${escape(u.username)}')">
+                ${u.active ? '✅ Active' : '❌ Inactive'}
+              </button>
+            </td>
             <td>
               <button class="btn btn-danger" onclick="deleteUser('${escape(u.username)}')">Delete</button>
             </td>
@@ -279,6 +299,11 @@
         errorEl.style.display = 'block';
       }
     });
+
+    async function toggleActive(username) {
+      const res = await fetch(`/api/users/${encodeURIComponent(username)}/active`, { method: 'PATCH' });
+      if (res.ok) loadUsers();
+    }
 
     async function deleteUser(username) {
       if (!confirm(`Delete user "${username}"?`)) return;

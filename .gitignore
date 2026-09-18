@@ -2,6 +2,7 @@
 ./build
 .env
 .idea
+.idea/*
 .gradle
 !gradle/wrapper/gradle-wrapper.jar
 tests/romedawg_secrets.txt

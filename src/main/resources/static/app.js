@@ -65,6 +65,7 @@ async function checkAuthStatus() {
     if (data.loggedIn) {
       document.getElementById('studioNavItem')?.classList.remove('hidden');
       document.getElementById('studioDivider')?.classList.remove('hidden');
+      document.getElementById('adminNavItem')?.classList.remove('hidden');
       document.getElementById('mobileStudioBtn')?.classList.remove('hidden');
       document.getElementById('logoutForm')?.classList.remove('hidden');
     }

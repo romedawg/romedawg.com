@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin | The Curious SRE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: #0f172a;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #e2e8f0;
+      padding: 2rem;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+
+    .back-link {
+      font-size: 0.84rem;
+      color: #64748b;
+      text-decoration: none;
+    }
+    .back-link:hover { color: #94a3b8; }
+
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 900px; }
+
+    @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #334155;
+    }
+
+    .form-group { margin-bottom: 0.85rem; }
+
+    label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #64748b;
+      margin-bottom: 0.3rem;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.55rem 0.8rem;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      color: #e2e8f0;
+      font-size: 0.88rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: #10b981;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
+    }
+
+    select option { background: #1e293b; }
+
+    .btn {
+      padding: 0.55rem 1.25rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 0.65rem;
+    }
+    .btn-primary:hover { background: linear-gradient(135deg, #059669, #047857); }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      font-size: 0.76rem;
+      padding: 0.25rem 0.65rem;
+    }
+    .btn-danger:hover { background: rgba(239, 68, 68, 0.25); }
+
+    .alert {
+      display: none;
+      padding: 0.6rem 0.9rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    .alert-success { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: #34d399; }
+    .alert-error   { background: rgba(239,68,68,0.12);  border: 1px solid rgba(239,68,68,0.3);  color: #f87171; }
+
+    .user-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+    .user-table th {
+      text-align: left;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #475569;
+      padding: 0.4rem 0.6rem;
+      border-bottom: 1px solid #334155;
+    }
+    .user-table td {
+      padding: 0.55rem 0.6rem;
+      border-bottom: 1px solid #1e293b;
+      color: #cbd5e1;
+      vertical-align: middle;
+    }
+    .user-table tr:last-child td { border-bottom: none; }
+
+    .role-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 0.1rem 0.5rem;
+      border-radius: 999px;
+    }
+    .role-ADMIN { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+    .role-USER  { background: rgba(16,185,129,0.1);  color: #34d399;  border: 1px solid rgba(16,185,129,0.25); }
+
+    .empty-row td { color: #475569; text-align: center; padding: 1.5rem; }
+  </style>
+</head>
+<body>
+  <div class="page-header">
+    <span class="page-title">⚙️ User Management</span>
+    <a href="/" class="back-link">← Back to blog</a>
+  </div>
+
+  <div class="grid">
+    <!-- Create User -->
+    <div class="card">
+      <div class="card-title">Create New User</div>
+
+      <div class="alert alert-success" id="createSuccess"></div>
+      <div class="alert alert-error"   id="createError"></div>
+
+      <form id="createUserForm">
+        <div class="form-group">
+          <label for="newUsername">Username</label>
+          <input type="text" id="newUsername" placeholder="e.g. johndoe" autocomplete="off" required />
+        </div>
+        <div class="form-group">
+          <label for="newPassword">Password</label>
+          <input type="password" id="newPassword" placeholder="Min 6 characters" required />
+        </div>
+        <div class="form-group">
+          <label for="newRole">Role</label>
+          <select id="newRole">
+            <option value="USER">User</option>
+            <option value="ADMIN">Admin</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Create User</button>
+      </form>
+    </div>
+
+    <!-- User List -->
+    <div class="card">
+      <div class="card-title">Existing Users</div>
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Active</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="userTableBody">
+          <tr class="empty-row"><td colspan="4">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    async function loadUsers() {
+      const tbody = document.getElementById('userTableBody');
+      try {
+        const res = await fetch('/api/users');
+        if (res.status === 401 || res.status === 403) {
+          window.location.href = '/login';
+          return;
+        }
+        const users = await res.json();
+        if (!users.length) {
+          tbody.innerHTML = '<tr class="empty-row"><td colspan="4">No users found.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = users.map(u => `
+          <tr>
+            <td>${escape(u.username)}</td>
+            <td><span class="role-badge role-${u.role}">${u.role}</span></td>
+            <td>${u.active ? '✅' : '❌'}</td>
+            <td>
+              <button class="btn btn-danger" onclick="deleteUser('${escape(u.username)}')">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (e) {
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Failed to load users.</td></tr>';
+      }
+    }
+
+    document.getElementById('createUserForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const successEl = document.getElementById('createSuccess');
+      const errorEl   = document.getElementById('createError');
+      successEl.style.display = 'none';
+      errorEl.style.display   = 'none';
+
+      const body = {
+        username: document.getElementById('newUsername').value.trim(),
+        password: document.getElementById('newPassword').value,
+        role:     document.getElementById('newRole').value,
+      };
+
+      try {
+        const res = await fetch('/api/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          successEl.textContent = `User "${data.username}" created with role ${data.role}.`;
+          successEl.style.display = 'block';
+          document.getElementById('createUserForm').reset();
+          loadUsers();
+        } else {
+          errorEl.textContent = data.error || 'Failed to create user.';
+          errorEl.style.display = 'block';
+        }
+      } catch (err) {
+        errorEl.textContent = 'Network error.';
+        errorEl.style.display = 'block';
+      }
+    });
+
+    async function deleteUser(username) {
+      if (!confirm(`Delete user "${username}"?`)) return;
+      const res = await fetch(`/api/users/${encodeURIComponent(username)}`, { method: 'DELETE' });
+      if (res.ok) loadUsers();
+    }
+
+    function escape(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    loadUsers();
+  </script>
+</body>
+</html>

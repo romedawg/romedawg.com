@@ -1,6 +1,23 @@
 stages:
+  - test
   - build
   - package
+
+# Define when the pipeline as a whole should run
+workflow:
+  rules:
+    # Trigger on Merge Requests
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    # Trigger on pushes to the main/default branch
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# This job runs ONLY when a Merge Request is active
+pr-test-job:
+  stage: test
+  script:
+    - ./gradlew test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 build_jar:
   stage: build

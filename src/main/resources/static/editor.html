@@ -73,6 +73,9 @@
         <span>💾 Export .md</span>
       </button>
 
+      <button class="btn btn-secondary btn-sm" id="btnToggleArticles" title="Browse & load existing articles">
+        <span>📂 Articles</span>
+      </button>
       <a href="index.html" class="btn btn-secondary btn-sm">Cancel</a>
       
       <button class="btn btn-primary btn-sm" id="btnPublish">
@@ -225,6 +228,16 @@ console.log('Hello Curious SRE!');
             <!-- Tags will appear here -->
           </div>
         </article>
+      </div>
+    </div>
+    <!-- Articles Browser Pane -->
+    <div class="pane pane-articles" id="paneArticles">
+      <div class="pane-header">
+        <span class="pane-label">ARTICLES</span>
+        <button class="tool-btn" id="btnRefreshArticles" title="Refresh list">↺</button>
+      </div>
+      <div class="articles-list" id="articlesList">
+        <div class="articles-loading">Loading…</div>
       </div>
     </div>
   </main>

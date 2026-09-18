@@ -49,6 +49,17 @@ public class BlogApiController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(created));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<BlogPost>> updatePost(@PathVariable String id, @RequestBody CreatePostRequest request) {
+        if (request.getTitle() == null || request.getTitle().isBlank() ||
+            request.getContent() == null || request.getContent().isBlank()) {
+            return ResponseEntity.badRequest().body(ApiResponse.fail("Title and content are required"));
+        }
+        return blogService.updatePost(id, request)
+                .map(post -> ResponseEntity.ok(ApiResponse.ok(post)))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.fail("Post not found")));
+    }
+
     @PostMapping("/{id}/like")
     public ResponseEntity<ApiResponse<Void>> likePost(@PathVariable String id) {
         Optional<Integer> newLikes = blogService.likePost(id);

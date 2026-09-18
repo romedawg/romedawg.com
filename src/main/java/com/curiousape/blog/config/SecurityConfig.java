@@ -36,6 +36,7 @@ public class SecurityConfig {
                 // Editor, write operations, and user management require login
                 .requestMatchers("/editor.html", "/admin.html").authenticated()
                 .requestMatchers(HttpMethod.POST, "/api/posts/**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/api/posts/**").authenticated()
                 .requestMatchers("/api/users/**").authenticated()
                 .anyRequest().permitAll()
             )

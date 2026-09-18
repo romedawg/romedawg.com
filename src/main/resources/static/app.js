@@ -58,11 +58,14 @@ document.addEventListener('DOMContentLoaded', () => {
   fetchPosts();
 });
 
+let isLoggedIn = false;
+
 async function checkAuthStatus() {
   try {
     const resp = await fetch('/api/auth/status');
     const data = await resp.json();
-    if (data.loggedIn) {
+    isLoggedIn = !!data.loggedIn;
+    if (isLoggedIn) {
       document.getElementById('studioNavItem')?.classList.remove('hidden');
       document.getElementById('studioDivider')?.classList.remove('hidden');
       document.getElementById('adminNavItem')?.classList.remove('hidden');
@@ -392,6 +395,17 @@ function openArticle(id, updateHash = true) {
   articleCrumbTitle.textContent = post.title;
 
   if (articleLikeCount) articleLikeCount.textContent = post.likes || 0;
+
+  // Show edit button for logged-in users
+  const btnEdit = document.getElementById('btnEditArticle');
+  if (btnEdit) {
+    if (isLoggedIn) {
+      btnEdit.href = `editor.html?id=${post.id}`;
+      btnEdit.classList.remove('hidden');
+    } else {
+      btnEdit.classList.add('hidden');
+    }
+  }
 
   // Render Tags
   if (articleTagsWrap) {

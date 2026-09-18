@@ -170,10 +170,21 @@ It is tempting to add libraries, frameworks, and abstractions before you truly u
 
 const DRAFT_STORAGE_KEY = 'the_curious_ape_editor_draft_v2';
 
+// Edit mode state
+let currentEditId = null;
+
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
   setupEventListeners();
-  loadSavedDraft();
+  loadArticlesBrowser();
+
+  const params = new URLSearchParams(window.location.search);
+  const editId = params.get('id');
+  if (editId) {
+    loadArticleForEditing(editId);
+  } else {
+    loadSavedDraft();
+  }
   updateLivePreviewAndStats();
 });
 
@@ -229,8 +240,20 @@ function setupEventListeners() {
   mdFileInput.addEventListener('change', handleFileImport);
   btnExportMd.addEventListener('click', handleFileExport);
 
-  // Publish
+  // Publish / Update
   btnPublish.addEventListener('click', handlePublish);
+
+  // Articles browser toggle
+  const btnToggleArticles = document.getElementById('btnToggleArticles');
+  const btnRefreshArticles = document.getElementById('btnRefreshArticles');
+  if (btnToggleArticles) {
+    btnToggleArticles.addEventListener('click', () => {
+      workspace.classList.toggle('browser-open');
+    });
+  }
+  if (btnRefreshArticles) {
+    btnRefreshArticles.addEventListener('click', loadArticlesBrowser);
+  }
 
   // Reset Draft
   btnClearDraft.addEventListener('click', handleClearDraft);
@@ -749,32 +772,90 @@ async function handlePublish() {
     content
   };
 
+  const isEditing = currentEditId !== null;
   btnPublish.disabled = true;
-  btnPublish.innerHTML = '<span>Publishing... ⏳</span>';
+  btnPublish.innerHTML = isEditing ? '<span>Saving... ⏳</span>' : '<span>Publishing... ⏳</span>';
 
   try {
-    const res = await fetch('/api/posts', {
-      method: 'POST',
+    const url = isEditing ? `/api/posts/${currentEditId}` : '/api/posts';
+    const method = isEditing ? 'PUT' : 'POST';
+
+    const res = await fetch(url, {
+      method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
 
     if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-    const data = await res.json();
 
-    // Clear saved draft
     localStorage.removeItem(DRAFT_STORAGE_KEY);
 
-    showToast('🎉 Story published successfully! Redirecting...');
-    setTimeout(() => {
-      window.location.href = 'index.html';
-    }, 1200);
+    showToast(isEditing ? '✅ Article updated! Redirecting...' : '🎉 Story published! Redirecting...');
+    setTimeout(() => { window.location.href = 'index.html'; }, 1200);
   } catch (err) {
-    console.error('Error publishing story:', err);
-    alert('Failed to publish story to the server. Please check the backend connection.');
+    console.error('Error saving story:', err);
+    alert('Failed to save story. Please check the backend connection.');
     btnPublish.disabled = false;
-    btnPublish.innerHTML = '<span>Publish Story 🚀</span>';
+    btnPublish.innerHTML = isEditing ? '<span>Update Story ✏️</span>' : '<span>Publish Story 🚀</span>';
   }
+}
+
+// Load an existing article into the editor for editing
+async function loadArticleForEditing(id) {
+  try {
+    const res = await fetch(`/api/posts/${id}`);
+    if (!res.ok) return;
+    const data = await res.json();
+    const post = data.post || data;
+
+    currentEditId = String(id);
+    postTitleInput.value = post.title || '';
+    postAuthorInput.value = post.author || '';
+    postAuthorRoleInput.value = post.authorRole || '';
+    postCategorySelect.value = post.category || 'Articles';
+    postTagsInput.value = (post.tags || []).join(', ');
+    postSummaryInput.value = post.summary || '';
+    markdownSource.value = post.content || '';
+
+    btnPublish.innerHTML = '<span>Update Story ✏️</span>';
+    draftStatusText.textContent = `Editing: ${post.title}`;
+
+    updateLivePreviewAndStats();
+    highlightActiveBrowserItem(currentEditId);
+  } catch (e) {
+    console.error('Failed to load article for editing:', e);
+  }
+}
+
+// Load the articles browser panel
+async function loadArticlesBrowser() {
+  const list = document.getElementById('articlesList');
+  if (!list) return;
+  list.innerHTML = '<div class="articles-loading">Loading…</div>';
+  try {
+    const res = await fetch('/api/posts');
+    const data = await res.json();
+    const posts = data.posts || [];
+    if (!posts.length) {
+      list.innerHTML = '<div class="articles-loading">No articles yet.</div>';
+      return;
+    }
+    list.innerHTML = posts.map(p => `
+      <div class="article-browser-item ${currentEditId === String(p.id) ? 'active' : ''}"
+           data-id="${p.id}" onclick="loadArticleForEditing('${p.id}')">
+        <div class="ab-title">${escapeHtml(p.title)}</div>
+        <div class="ab-meta">${p.category || ''} · ${p.date || ''}</div>
+      </div>
+    `).join('');
+  } catch (e) {
+    list.innerHTML = '<div class="articles-loading">Failed to load.</div>';
+  }
+}
+
+function highlightActiveBrowserItem(id) {
+  document.querySelectorAll('.article-browser-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.id === String(id));
+  });
 }
 
 // Utilities

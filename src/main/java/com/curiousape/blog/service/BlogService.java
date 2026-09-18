@@ -94,6 +94,42 @@ public class BlogService {
     }
 
     @Transactional
+    public Optional<BlogPost> updatePost(String idStr, CreatePostRequest request) {
+        try {
+            long id = Long.parseLong(idStr);
+            return repository.findById(id).map(entity -> {
+                String rawTitle = (request.getTitle() != null && !request.getTitle().isBlank())
+                        ? request.getTitle().trim() : entity.getTitle();
+                String content = request.getContent() != null ? request.getContent() : entity.getContent();
+
+                String summary = request.getSummary();
+                if (summary == null || summary.isBlank()) {
+                    summary = content.length() > 140 ? content.substring(0, 137) + "..." : content;
+                }
+                List<String> tags = (request.getTags() != null && !request.getTags().isEmpty())
+                        ? request.getTags() : entity.getTags();
+
+                entity.setTitle(rawTitle);
+                if (request.getAuthor() != null && !request.getAuthor().isBlank())
+                    entity.setAuthor(request.getAuthor());
+                if (request.getAuthorRole() != null && !request.getAuthorRole().isBlank())
+                    entity.setAuthorRole(request.getAuthorRole());
+                if (request.getCategory() != null && !request.getCategory().isBlank())
+                    entity.setCategory(request.getCategory());
+                entity.setTags(tags);
+                entity.setSummary(summary);
+                entity.setContent(content);
+                entity.setReadTime(calculateReadTime(content));
+                String baseSlug = rawTitle.toLowerCase().replaceAll("[^a-z0-9]+", "-").replaceAll("^-|-$", "");
+                entity.setSlug(baseSlug + "-" + entity.getId());
+                return toDto(repository.save(entity));
+            });
+        } catch (NumberFormatException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Transactional
     public Optional<Integer> likePost(String idOrSlug) {
         Optional<BlogPost> dto = getPostById(idOrSlug);
         if (dto.isEmpty()) return Optional.empty();

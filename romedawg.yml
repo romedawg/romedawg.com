@@ -21,7 +21,7 @@ apiVersion: external-secrets.io/v1
 kind: SecretStore
 metadata:
   name: romedawg-ssm-store
-  namespace: listomania
+  namespace: romedawg
 spec:
   provider:
     aws:
@@ -84,10 +84,13 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            - name: POSTGRES_HOST
+            - name: POSTGRES_DOMAIN
               value: romedawg.cuqo4j764p9h.us-east-2.rds.amazonaws.com
             - name: POSTGRES_DATABASE
               value: blog_db
+          envFrom:
+            - secretRef:
+                name: romedawg-db-credentials
 ---
 # 5. Kubernetes Service (Target for Ingress)
 apiVersion: v1

@@ -10,6 +10,7 @@ public class CreatePostRequest {
     private List<String> tags;
     private String summary;
     private String content;
+    private Boolean featured;
 
     public CreatePostRequest() {}
 
@@ -34,4 +35,8 @@ public class CreatePostRequest {
 
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
+
+    public Boolean isFeatured() { return featured != null && featured; }
+    public Boolean getFeatured() { return featured; }
+    public void setFeatured(Boolean featured) { this.featured = featured; }
 }

@@ -113,6 +113,14 @@
         </select>
       </div>
 
+      <div class="meta-field meta-field-toggle">
+        <label for="postFeaturedCheck">Featured Spotlight</label>
+        <label class="toggle-checkbox-label" title="Pin this post to the top Featured Spotlight on the homepage">
+          <input type="checkbox" id="postFeaturedCheck" />
+          <span class="toggle-text">🌟 Spotlight Story</span>
+        </label>
+      </div>
+
       <div class="meta-field flex-2">
         <label for="postTagsInput">Tags (comma-separated)</label>
         <input type="text" id="postTagsInput" value="Cloud, Architecture, SRE" placeholder="e.g. Couchbase, AWS, Kubernetes" />
@@ -209,7 +217,10 @@ console.log('Hello Curious SRE!');
         <!-- Rendered Post Detail Article -->
         <article class="post-preview-card">
           <div class="post-detail-header">
-            <span class="post-detail-category" id="previewCategory">Engineering</span>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+              <span class="post-detail-category" id="previewCategory">Engineering</span>
+              <span class="featured-badge hidden" id="previewFeaturedBadge">🌟 Featured Spotlight</span>
+            </div>
             <h1 class="post-detail-title" id="previewTitle">Story Title Preview</h1>
             <div class="post-detail-author-row">
               <div class="post-detail-author">

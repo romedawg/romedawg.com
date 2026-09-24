@@ -4,6 +4,7 @@ const postTitleInput = document.getElementById('postTitleInput');
 const postAuthorInput = document.getElementById('postAuthorInput');
 const postAuthorRoleInput = document.getElementById('postAuthorRoleInput');
 const postCategorySelect = document.getElementById('postCategorySelect');
+const postFeaturedCheck = document.getElementById('postFeaturedCheck');
 const postTagsInput = document.getElementById('postTagsInput');
 const postSummaryInput = document.getElementById('postSummaryInput');
 
@@ -12,6 +13,7 @@ const previewTitle = document.getElementById('previewTitle');
 const previewAuthor = document.getElementById('previewAuthor');
 const previewMeta = document.getElementById('previewMeta');
 const previewCategory = document.getElementById('previewCategory');
+const previewFeaturedBadge = document.getElementById('previewFeaturedBadge');
 const previewBody = document.getElementById('previewBody');
 const previewTags = document.getElementById('previewTags');
 const previewReadTime = document.getElementById('previewReadTime');
@@ -196,11 +198,15 @@ function setupEventListeners() {
     saveDraft();
   });
 
-  [postTitleInput, postAuthorInput, postAuthorRoleInput, postCategorySelect, postTagsInput, postSummaryInput]
-    .forEach(el => el.addEventListener('input', () => {
-      updateLivePreviewAndStats();
-      saveDraft();
-    }));
+  [postTitleInput, postAuthorInput, postAuthorRoleInput, postCategorySelect, postFeaturedCheck, postTagsInput, postSummaryInput]
+    .filter(Boolean)
+    .forEach(el => {
+      const evtType = el.type === 'checkbox' ? 'change' : 'input';
+      el.addEventListener(evtType, () => {
+        updateLivePreviewAndStats();
+        saveDraft();
+      });
+    });
 
   // Keyboard Shortcuts inside Editor Textarea
   markdownSource.addEventListener('keydown', handleEditorKeydown);
@@ -437,6 +443,11 @@ function updateLivePreviewAndStats() {
   previewTitle.textContent = title;
   previewAuthor.textContent = author;
   previewCategory.textContent = category;
+
+  if (previewFeaturedBadge) {
+    const isFeatured = postFeaturedCheck && postFeaturedCheck.checked;
+    previewFeaturedBadge.classList.toggle('hidden', !isFeatured);
+  }
   
   // Read time & word stats
   const words = content.trim() ? content.trim().split(/\s+/).length : 0;
@@ -645,6 +656,7 @@ function saveDraft() {
     author: postAuthorInput.value,
     authorRole: postAuthorRoleInput.value,
     category: postCategorySelect.value,
+    featured: postFeaturedCheck ? postFeaturedCheck.checked : false,
     tags: postTagsInput.value,
     summary: postSummaryInput.value,
     content: markdownSource.value,
@@ -669,7 +681,10 @@ function loadSavedDraft() {
         postTitleInput.value = draft.title || '';
         postAuthorInput.value = draft.author || 'Roman Rafacz';
         postAuthorRoleInput.value = draft.authorRole || 'Staff SRE & Infrastructure';
-        postCategorySelect.value = draft.category || 'Engineering';
+        postCategorySelect.value = draft.category || 'Articles';
+        if (postFeaturedCheck && draft.featured !== undefined) {
+          postFeaturedCheck.checked = !!draft.featured;
+        }
         postTagsInput.value = draft.tags || 'Cloud, SRE';
         postSummaryInput.value = draft.summary || '';
         markdownSource.value = draft.content || '';
@@ -761,12 +776,14 @@ async function handlePublish() {
   }
 
   const tags = tagsStr.split(',').map(t => t.trim()).filter(Boolean);
+  const featured = postFeaturedCheck ? postFeaturedCheck.checked : false;
 
   const payload = {
     title,
     author,
     authorRole,
     category,
+    featured,
     tags: tags.length ? tags : ['General'],
     summary,
     content
@@ -813,6 +830,9 @@ async function loadArticleForEditing(id) {
     postAuthorInput.value = post.author || '';
     postAuthorRoleInput.value = post.authorRole || '';
     postCategorySelect.value = post.category || 'Articles';
+    if (postFeaturedCheck) {
+      postFeaturedCheck.checked = !!post.featured;
+    }
     postTagsInput.value = (post.tags || []).join(', ');
     postSummaryInput.value = post.summary || '';
     markdownSource.value = post.content || '';
@@ -843,8 +863,8 @@ async function loadArticlesBrowser() {
     list.innerHTML = posts.map(p => `
       <div class="article-browser-item ${currentEditId === String(p.id) ? 'active' : ''}"
            data-id="${p.id}" onclick="loadArticleForEditing('${p.id}')">
-        <div class="ab-title">${escapeHtml(p.title)}</div>
-        <div class="ab-meta">${p.category || ''} · ${p.date || ''}</div>
+        <div class="ab-title">${p.featured ? '🌟 ' : ''}${escapeHtml(p.title)}</div>
+        <div class="ab-meta">${p.category || ''} · ${p.date || ''}${p.featured ? ' · 🌟 Spotlight' : ''}</div>
       </div>
     `).join('');
   } catch (e) {

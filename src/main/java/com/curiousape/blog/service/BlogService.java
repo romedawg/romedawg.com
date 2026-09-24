@@ -67,16 +67,25 @@ public class BlogService {
             summary = content.length() > 140 ? content.substring(0, 137) + "..." : content;
         }
 
-        List<String> tags = request.getTags();
-        if (tags == null || tags.isEmpty()) {
-            tags = List.of("General");
-        }
+        List<String> tags = request.getTags() != null && !request.getTags().isEmpty()
+                ? new java.util.ArrayList<>(request.getTags())
+                : new java.util.ArrayList<>(java.util.List.of("General"));
 
         String baseSlug = rawTitle.toLowerCase().replaceAll("[^a-z0-9]+", "-").replaceAll("^-|-$", "");
 
+        boolean isFeat = request.isFeatured() != null && request.isFeatured();
+        if (isFeat) {
+            repository.findAll().forEach(p -> {
+                if (p.isFeatured()) {
+                    p.setFeatured(false);
+                    repository.save(p);
+                }
+            });
+        }
+
         BlogPostEntity entity = new BlogPostEntity();
         entity.setTitle(rawTitle);
-        entity.setSlug(baseSlug + "-" + System.currentTimeMillis()); // temporary slug satisfies NOT NULL
+        entity.setSlug(baseSlug.isBlank() ? "post-" + System.currentTimeMillis() : baseSlug + "-" + System.currentTimeMillis());
         entity.setAuthor(request.getAuthor() != null && !request.getAuthor().isBlank() ? request.getAuthor() : "Roman");
         entity.setAuthorRole(request.getAuthorRole() != null && !request.getAuthorRole().isBlank() ? request.getAuthorRole() : "Contributor");
         entity.setDate(LocalDate.now());
@@ -86,11 +95,11 @@ public class BlogService {
         entity.setSummary(summary);
         entity.setContent(content);
         entity.setLikes(0);
-        entity.setFeatured(false);
+        entity.setFeatured(isFeat);
 
         BlogPostEntity saved = repository.save(entity);
-        saved.setSlug(baseSlug + "-" + saved.getId());
-        return toDto(repository.save(saved));
+        saved.setSlug(baseSlug.isBlank() ? "post-" + saved.getId() : baseSlug + "-" + saved.getId());
+        return toDto(saved);
     }
 
     @Transactional
@@ -107,7 +116,7 @@ public class BlogService {
                     summary = content.length() > 140 ? content.substring(0, 137) + "..." : content;
                 }
                 List<String> tags = (request.getTags() != null && !request.getTags().isEmpty())
-                        ? request.getTags() : entity.getTags();
+                        ? new java.util.ArrayList<>(request.getTags()) : entity.getTags();
 
                 entity.setTitle(rawTitle);
                 if (request.getAuthor() != null && !request.getAuthor().isBlank())
@@ -116,13 +125,25 @@ public class BlogService {
                     entity.setAuthorRole(request.getAuthorRole());
                 if (request.getCategory() != null && !request.getCategory().isBlank())
                     entity.setCategory(request.getCategory());
+                if (request.getFeatured() != null) {
+                    boolean isFeat = request.getFeatured();
+                    if (isFeat) {
+                        repository.findAll().forEach(p -> {
+                            if (p.isFeatured() && p.getId() != entity.getId()) {
+                                p.setFeatured(false);
+                                repository.save(p);
+                            }
+                        });
+                    }
+                    entity.setFeatured(isFeat);
+                }
                 entity.setTags(tags);
                 entity.setSummary(summary);
                 entity.setContent(content);
                 entity.setReadTime(calculateReadTime(content));
                 String baseSlug = rawTitle.toLowerCase().replaceAll("[^a-z0-9]+", "-").replaceAll("^-|-$", "");
-                entity.setSlug(baseSlug + "-" + entity.getId());
-                return toDto(repository.save(entity));
+                entity.setSlug(baseSlug.isBlank() ? "post-" + entity.getId() : baseSlug + "-" + entity.getId());
+                return toDto(entity);
             });
         } catch (NumberFormatException e) {
             return Optional.empty();

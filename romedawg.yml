@@ -56,6 +56,40 @@ spec:
       remoteRef:
         key: /all/dev/romedawg/postgres_password
 ---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: romedawg-registry
+  namespace: romedawg
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: romedawg-ssm-store
+    kind: SecretStore
+  target:
+    name: gitlab-registry  # The resulting Kubernetes Secret object name
+    creationPolicy: Owner
+    template:
+      type: kubernetes.io/dockerconfigjson
+      data:
+        .dockerconfigjson: |
+          {
+            "auths": {
+              "registry.gitlab.com": {
+                "username": "{{ .registry_username }}",
+                "password": "{{ .registry_password }}",
+                "auth": "{{ printf "%s:%s" .registry_username .registry_password | b64enc }}"
+              }
+            }
+          }
+  data:
+    - secretKey: registry_username         # Key inside the Kubernetes Secret
+      remoteRef:
+        key: /dev/argocd/gitlab/username # Path/Key inside AWS Secrets Manager
+    - secretKey: registry_password
+      remoteRef:
+        key: /dev/argocd/gitlab/password
+---
 # 4. Application Deployment
 apiVersion: apps/v1
 kind: Deployment

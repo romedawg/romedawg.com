@@ -162,6 +162,24 @@ public class BlogService {
         });
     }
 
+    @Transactional
+    public boolean deletePost(String idOrSlug) {
+        if (idOrSlug == null || idOrSlug.isBlank()) return false;
+        try {
+            long id = Long.parseLong(idOrSlug);
+            if (repository.existsById(id)) {
+                repository.deleteById(id);
+                return true;
+            }
+        } catch (NumberFormatException ignored) {}
+        Optional<BlogPostEntity> bySlug = repository.findBySlug(idOrSlug);
+        if (bySlug.isPresent()) {
+            repository.delete(bySlug.get());
+            return true;
+        }
+        return false;
+    }
+
     private BlogPost toDto(BlogPostEntity e) {
         return new BlogPost(
                 String.valueOf(e.getId()),

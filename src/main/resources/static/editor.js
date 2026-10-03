@@ -38,6 +38,7 @@ const btnImportMd = document.getElementById('btnImportMd');
 const mdFileInput = document.getElementById('mdFileInput');
 const btnExportMd = document.getElementById('btnExportMd');
 const btnPublish = document.getElementById('btnPublish');
+const btnDeletePost = document.getElementById('btnDeletePost');
 const btnClearDraft = document.getElementById('btnClearDraft');
 const btnHelp = document.getElementById('btnHelp');
 const helpModalBackdrop = document.getElementById('helpModalBackdrop');
@@ -248,6 +249,15 @@ function setupEventListeners() {
 
   // Publish / Update
   btnPublish.addEventListener('click', handlePublish);
+
+  // Delete Post
+  if (btnDeletePost) {
+    btnDeletePost.addEventListener('click', () => {
+      if (currentEditId) {
+        handleDeletePost(currentEditId, postTitleInput.value);
+      }
+    });
+  }
 
   // Articles browser toggle
   const btnToggleArticles = document.getElementById('btnToggleArticles');
@@ -617,9 +627,15 @@ function formatMarkdown(content) {
 function loadTemplate(key) {
   if (key === 'clear') {
     if (confirm('Clear the current editor and start with a blank draft?')) {
+      currentEditId = null;
+      if (btnDeletePost) btnDeletePost.classList.add('hidden');
+      btnPublish.innerHTML = '<span>Publish Story 🚀</span>';
+      highlightActiveBrowserItem(null);
       postTitleInput.value = '';
       markdownSource.value = '';
       postSummaryInput.value = '';
+      if (postFeaturedCheck) postFeaturedCheck.checked = false;
+      if (window.location.search) history.replaceState(null, '', window.location.pathname);
       updateLivePreviewAndStats();
       saveDraft();
       showToast('🧹 Editor cleared to blank slate');
@@ -636,10 +652,17 @@ function loadTemplate(key) {
     }
   }
 
+  currentEditId = null;
+  if (btnDeletePost) btnDeletePost.classList.add('hidden');
+  btnPublish.innerHTML = '<span>Publish Story 🚀</span>';
+  highlightActiveBrowserItem(null);
+  if (window.location.search) history.replaceState(null, '', window.location.pathname);
+
   postTitleInput.value = tmpl.title;
   postAuthorInput.value = tmpl.author;
   postAuthorRoleInput.value = tmpl.role;
   postCategorySelect.value = tmpl.category;
+  if (postFeaturedCheck) postFeaturedCheck.checked = false;
   postTagsInput.value = tmpl.tags;
   postSummaryInput.value = tmpl.summary;
   markdownSource.value = tmpl.content;
@@ -704,9 +727,16 @@ function loadSavedDraft() {
 function handleClearDraft() {
   if (confirm('Are you sure you want to delete your saved draft?')) {
     localStorage.removeItem(DRAFT_STORAGE_KEY);
+    currentEditId = null;
+    if (btnDeletePost) btnDeletePost.classList.add('hidden');
+    btnPublish.innerHTML = '<span>Publish Story 🚀</span>';
+    highlightActiveBrowserItem(null);
+    if (window.location.search) history.replaceState(null, '', window.location.pathname);
     postTitleInput.value = '';
     markdownSource.value = '';
     postSummaryInput.value = '';
+    if (postFeaturedCheck) postFeaturedCheck.checked = false;
+    draftStatusText.textContent = 'Draft cleared';
     updateLivePreviewAndStats();
     showToast('🗑️ Draft reset successfully');
   }
@@ -838,12 +868,56 @@ async function loadArticleForEditing(id) {
     markdownSource.value = post.content || '';
 
     btnPublish.innerHTML = '<span>Update Story ✏️</span>';
+    if (btnDeletePost) btnDeletePost.classList.remove('hidden');
     draftStatusText.textContent = `Editing: ${post.title}`;
 
     updateLivePreviewAndStats();
     highlightActiveBrowserItem(currentEditId);
   } catch (e) {
     console.error('Failed to load article for editing:', e);
+  }
+}
+
+// Delete a post
+async function handleDeletePost(id, title) {
+  const postTitle = title || 'this post';
+  if (!confirm(`Are you sure you want to delete "${postTitle}"?\n\nThis action cannot be undone.`)) {
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/posts/${id}`, {
+      method: 'DELETE'
+    });
+
+    if (!res.ok) {
+      throw new Error(`Failed to delete post: HTTP ${res.status}`);
+    }
+
+    showToast(`🗑️ "${postTitle}" deleted successfully`);
+
+    // If the deleted post is currently loaded in the editor, reset the editor
+    if (currentEditId === String(id)) {
+      currentEditId = null;
+      localStorage.removeItem(DRAFT_STORAGE_KEY);
+      postTitleInput.value = '';
+      markdownSource.value = '';
+      postSummaryInput.value = '';
+      if (postFeaturedCheck) postFeaturedCheck.checked = false;
+      btnPublish.innerHTML = '<span>Publish Story 🚀</span>';
+      if (btnDeletePost) btnDeletePost.classList.add('hidden');
+      draftStatusText.textContent = 'Ready';
+      if (window.location.search) {
+        history.replaceState(null, '', window.location.pathname);
+      }
+      updateLivePreviewAndStats();
+    }
+
+    // Refresh articles browser list
+    await loadArticlesBrowser();
+  } catch (err) {
+    console.error('Error deleting post:', err);
+    alert('Failed to delete post. Please check the backend connection.');
   }
 }
 
@@ -862,9 +936,12 @@ async function loadArticlesBrowser() {
     }
     list.innerHTML = posts.map(p => `
       <div class="article-browser-item ${currentEditId === String(p.id) ? 'active' : ''}"
-           data-id="${p.id}" onclick="loadArticleForEditing('${p.id}')">
-        <div class="ab-title">${p.featured ? '🌟 ' : ''}${escapeHtml(p.title)}</div>
-        <div class="ab-meta">${p.category || ''} · ${p.date || ''}${p.featured ? ' · 🌟 Spotlight' : ''}</div>
+           data-id="${p.id}">
+        <div class="ab-content" onclick="loadArticleForEditing('${p.id}')">
+          <div class="ab-title">${p.featured ? '🌟 ' : ''}${escapeHtml(p.title)}</div>
+          <div class="ab-meta">${escapeHtml(p.category || '')} · ${escapeHtml(p.date || '')}${p.featured ? ' · 🌟 Spotlight' : ''}</div>
+        </div>
+        <button class="ab-delete-btn" title="Delete post" onclick="event.stopPropagation(); handleDeletePost('${p.id}', '${escapeJsQuotes(p.title)}')">🗑️</button>
       </div>
     `).join('');
   } catch (e) {
@@ -887,6 +964,14 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
+}
+
+function escapeJsQuotes(str) {
+  if (!str) return '';
+  return str
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/"/g, '&quot;');
 }
 
 function showToast(msg) {

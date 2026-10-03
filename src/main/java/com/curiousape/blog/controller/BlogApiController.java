@@ -67,4 +67,14 @@ public class BlogApiController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(ApiResponse.fail("Post not found")));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable String id) {
+        boolean deleted = blogService.deletePost(id);
+        if (deleted) {
+            return ResponseEntity.ok(ApiResponse.ok(null));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.fail("Post not found"));
+        }
+    }
 }

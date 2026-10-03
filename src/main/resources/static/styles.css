@@ -15,10 +15,10 @@
   --text-main: #31241f;
   --text-muted: #685953;
   --text-light: #8c7d77;
-  --bg-page: #f7f9fc;
+  --bg-page: #edf1f6;
   --bg-card: #ffffff;
-  --bg-subtle: #f0f4f9;
-  --border: #e3ebf3;
+  --bg-subtle: #e1e7ef;
+  --border: #d4dfea;
   --border-focus: #5992c6;
   --radius-sm: 8px;
   --radius-md: 14px;
@@ -1220,6 +1220,32 @@ button, input, select, textarea {
   transform: translateY(-1px);
 }
 
+.btn-danger {
+  background: #dc2626;
+  color: #ffffff;
+  border: 1px solid #b91c1c;
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.35);
+}
+
+.btn-danger-outline {
+  background: rgba(220, 38, 38, 0.1);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.btn-danger-outline:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+}
+
 .like-btn {
   display: inline-flex;
   align-items: center;
@@ -1930,6 +1956,10 @@ button, input, select, textarea {
 }
 
 .article-browser-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
   padding: 0.6rem 0.85rem;
   cursor: pointer;
   border-bottom: 1px solid #1e293b;
@@ -1939,6 +1969,37 @@ button, input, select, textarea {
 .article-browser-item:hover { background: #1e293b; }
 
 .article-browser-item.active { background: rgba(89, 146, 198, 0.15); border-left: 2px solid #5992c6; }
+
+.ab-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.ab-delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem 0.4rem;
+  font-size: 0.8rem;
+  opacity: 0.35;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+  color: #f87171;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ab-delete-btn:hover {
+  opacity: 1;
+  background: rgba(239, 68, 68, 0.25);
+  transform: scale(1.15);
+}
+
+.article-browser-item:hover .ab-delete-btn {
+  opacity: 0.75;
+}
 
 .ab-title {
   font-size: 0.78rem;
